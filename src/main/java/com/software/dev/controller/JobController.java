@@ -1,5 +1,6 @@
 package com.software.dev.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.software.dev.domain.QuartzEntity;
 import com.software.dev.domain.Result;
 import com.software.dev.mapper.QuartzEntityMapper;
@@ -7,12 +8,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
+/**
+ * Job Controller
+ * 任务控制器
+ * @author zhengkai@blog.csdn.net/moshowgame
+ * @date 2019/03/10
+ */
 @RestController
 @Slf4j
 public class JobController {
@@ -24,12 +32,13 @@ public class JobController {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @PostMapping("/add")
-    public Result save(QuartzEntity quartz){
+    public Result add(QuartzEntity quartz,String requestId){
         log.info("新增任务");
+        quartz.setJobClassName("com.software.dev.job.UrlJob");
         try {
-            //如果是修改  展示旧的 任务
+            //如果存在旧的，删除重新添加
             if(quartz.getOldJobGroup()!=null){
-                JobKey key = new JobKey(quartz.getOldJobName(),quartz.getOldJobGroup());
+                JobKey key = new JobKey(quartz.getJobName(), quartz.getJobGroup());
                 scheduler.deleteJob(key);
             }
             Class cls = Class.forName(quartz.getJobClassName()) ;
@@ -38,9 +47,9 @@ public class JobController {
             JobDetail job = JobBuilder.newJob(cls).withIdentity(quartz.getJobName(),
                     quartz.getJobGroup())
                     .withDescription(quartz.getDescription()).build();
-            //TODO
+
             //这里传入id作为处理
-            job.getJobDataMap().put("id", "1");
+            job.getJobDataMap().put("requestId", requestId);
 
             // 触发时间点
             CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(quartz.getCronExpression());
@@ -114,5 +123,15 @@ public class JobController {
             return Result.error();
         }
         return Result.ok();
+    }
+    @PostMapping("/test1")
+    public Result test1(@RequestBody Map<String,Object> map){
+        log.info("RequestMap:"+ JSON.toJSONString(map));
+        return Result.ok("请求成功");
+    }
+    @PostMapping("/test2")
+    public Result test2(Map<String,Object> map){
+        log.info("RequestMap:"+ JSON.toJSONString(map));
+        return Result.ok("请求成功");
     }
 }

@@ -8,12 +8,12 @@ import lombok.Data;
 @Data
 public class QuartzEntity {
     private String jobName;
-    private String jobGroup;
+    private String jobGroup="DEFAULT";
     private String description;
     private String jobClassName;
     private String cronExpression;
     private String triggerName;
     private String triggerState;
     private String oldJobName;
-    private String oldJobGroup;
+    private String oldJobGroup="DEFAULT";
 }

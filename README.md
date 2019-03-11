@@ -23,15 +23,19 @@ ResponseAssert
 ----
 响应断言，根据返回结果判断是否成功，例如设置{"code":"00"}，匹配到返回对象有code=00则代表成功，否则失败。
 
-#####目前进度10%
+#####目前进度25%
+- quartz√
 - druid√
 - springboot2√
 - fastjson√
 - mybatis-plus√
-- request loader
+- url request loader√
+- demo request test√
 - request token
 - request params
 - request assert
-- base ui
-- list ui
+- response log
+- login html
+- list html
 - ui component
+- code optimization
