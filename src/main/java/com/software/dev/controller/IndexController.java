@@ -16,7 +16,7 @@ public class IndexController {
     }
     @RequestMapping("/page")
     public String page(){
-        return "list";
+        return "urlrequest-list";
     }
 
     @ResponseBody

@@ -1,11 +1,11 @@
 package com.software.dev.domain;
 
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import java.util.Date;
-import java.util.List;
+
+import java.io.Serializable;
 
 /**
  *  url_request
@@ -18,7 +18,7 @@ public class UrlRequest implements Serializable {
     /**
      * 请求id
      */
-    @TableId
+    @TableId(type = IdType.ID_WORKER_STR)
     private String requestId;
 
     /**
@@ -49,6 +49,12 @@ public class UrlRequest implements Serializable {
      * 超时时间ms
      */
     private Integer requestTimeout;
+
+    @TableField(exist = false)
+    private String triggerState;
+
+    @TableField(exist = false)
+    private  String nextFireTime;
 
     public UrlRequest() {
     }

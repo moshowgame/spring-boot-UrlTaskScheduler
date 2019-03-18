@@ -2,22 +2,15 @@ package com.software.dev.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.software.dev.domain.QuartzEntity;
 import com.software.dev.domain.Result;
 import com.software.dev.domain.UrlRequest;
 import com.software.dev.job.UrlJob;
-import com.software.dev.mapper.QuartzEntityMapper;
 import com.software.dev.mapper.UrlRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,15 +27,16 @@ public class UrlTaskController {
     @Autowired
     private Scheduler scheduler;
     @Autowired
-    private QuartzEntityMapper quartzEntityMapper;
-    @Autowired
     private UrlRequestMapper urlRequestMapper;
 
     @PostMapping("/list")
-    public Result list(String requestId, Integer pageNo, Integer pageSize){
+    public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize){
         log.info("任务列表");
-        List<QuartzEntity> list = quartzEntityMapper.listQuartzEntity();
-        return Result.ok(list);
+        log.info("pageNo:"+pageNo);
+        log.info("pageSize:"+pageSize);
+        Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize);
+        Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
+        return Result.page(data,pageNo,pageSize,total);
     }
     @PostMapping("/trigger")
     public  Result trigger(String requestId) {
@@ -135,6 +129,15 @@ public class UrlTaskController {
                 e.printStackTrace();
                 return Result.error();
             }
+        }
+        return Result.ok();
+    }
+    @PostMapping("/insertN")
+    public  Result insertX(@RequestParam Integer n) {
+        for (int i = 0; i < n; i++) {
+            UrlRequest urlRequest=new UrlRequest();
+            urlRequest.setRequestMethod("POST");
+            urlRequestMapper.insert(urlRequest);
         }
         return Result.ok();
     }

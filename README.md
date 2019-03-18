@@ -23,7 +23,15 @@ ResponseAssert
 ----
 响应断言，根据返回结果判断是否成功，例如设置{"code":"00"}，匹配到返回对象有code=00则代表成功，否则失败。
 
-#####目前进度25%
+T_TASK_TRIGGERS表 TRIGGER_STATE字段
+----
+- WAITING:等待  
+- PAUSED:暂停 
+- ACQUIRED:正常执行 
+- BLOCKED：阻塞 
+- ERROR：错误
+
+#####目前进度30%
 - quartz√
 - druid√
 - springboot2√

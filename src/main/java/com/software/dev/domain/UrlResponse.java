@@ -1,6 +1,8 @@
 package com.software.dev.domain;
 
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,7 @@ public class UrlResponse implements Serializable {
     /**
      * 响应id
      */
+    @TableId
     private String responseId;
 
     /**
