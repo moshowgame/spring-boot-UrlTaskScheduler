@@ -43,10 +43,10 @@ public class UrlJob  implements Job, Serializable {
         //取得job详情
         JobDetail jobDetail = context.getJobDetail();
         // 取得job名称
-        String jobName = jobDetail.getClass().getName();
-        log.info("Job Name:" + jobName);
+        //String jobName = jobDetail.getClass().getName();
+        //log.info("Job Name:" + jobName);
         //取得job的类 ，由于UrlPlugin是同个class不同参数，所以这里都是同个class
-        log.info("Job Class:" + jobDetail.getJobClass());
+        //log.info("Job Class:" + jobDetail.getJobClass());
         //取得job开始时间
         //log.info("start/fire time: " + DateUtil.formatHttpDate(context.getFireTime()));
         //取得job下次触发时间
@@ -62,6 +62,8 @@ public class UrlJob  implements Job, Serializable {
             UrlRequest urlRequest=urlRequestMapper.selectOne(new QueryWrapper<UrlRequest>().eq("request_id",urlId));
             //成功找到请求id
             if(urlRequest!=null){
+                log.info("URL REQUEST NAME: " + urlRequest.getRequestName());
+                log.info(urlRequest.getRequestMethod()+":" + urlRequest.getRequestUrl());
                 //请求GET/POST
                 if(UrlRequest.RequestMethod.GET.equals(urlRequest.getRequestMethod())){
                     responseMsg = HttpUtil.get(urlRequest.getRequestUrl());

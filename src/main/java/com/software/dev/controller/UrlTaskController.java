@@ -1,7 +1,10 @@
 package com.software.dev.controller;
 
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Console;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.software.dev.domain.Result;
 import com.software.dev.domain.UrlRequest;
 import com.software.dev.job.UrlJob;
@@ -140,5 +143,24 @@ public class UrlTaskController {
             urlRequestMapper.insert(urlRequest);
         }
         return Result.ok();
+    }
+    @PostMapping("/save")
+    public  Result save(@RequestBody UrlRequest urlRequest) {
+        Console.log(JSON.toJSONString(urlRequest));
+        Assert.notBlank(urlRequest.getRequestName());
+        Assert.notBlank(urlRequest.getRequestCron());
+        Assert.notBlank(urlRequest.getRequestUrl());
+        if(urlRequestMapper.selectById(urlRequest.getRequestId())!=null){
+            urlRequestMapper.update(urlRequest,
+                    new UpdateWrapper<UrlRequest>()
+                            .eq("request_name",urlRequest.getRequestName())
+                            .eq("request_cron",urlRequest.getRequestCron())
+                            .eq("request_rul",urlRequest.getRequestUrl())
+            );
+        }else{
+            urlRequestMapper.insert(urlRequest);
+        }
+
+        return Result.ok("保存成功");
     }
 }

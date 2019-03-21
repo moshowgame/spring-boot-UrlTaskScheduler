@@ -9,6 +9,30 @@
 </head>
 <body>
 <div id="app">
+    <!-- 弹出层 -->
+    <el-dialog title="TASK定时任务" :visible.sync="dialogFormVisible">
+        <el-form :model="formData">
+            <el-form-item label="任务名称" :label-width="formLabelWidth">
+                <el-input v-model="formData.requestName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="请求方式" :label-width="formLabelWidth">
+                <el-select v-model="formData.requestMethod" placeholder="请选择请求方式">
+                    <el-option label="POST" value="POST"></el-option>
+                    <el-option label="GET" value="GET"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="CRON表达式" :label-width="formLabelWidth">
+                <el-input v-model="formData.requestCron" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="请求URL" :label-width="formLabelWidth">
+                <el-input v-model="formData.requestUrl" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary"  @click="submitForm('formData')">确 定</el-button>
+        </div>
+    </el-dialog>
     <!-- 分页 -->
     <el-table
             ref="multipleTable"
@@ -47,7 +71,7 @@
                 <el-button
                         size="mini"
                         type="info"
-                        @click="handleEdit(scope.$index, scope.row)">修改
+                        @click="dialogFormVisible = true">修改
                 </el-button>
                 <el-button
                         size="mini"
@@ -87,6 +111,15 @@
     var Main = {
         data() {
             return {
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
+                formData:{
+                    "requestId":"",
+                    "requestName":"",
+                    "requestCron":"",
+                    "requestMethod":"",
+                    "requestUrl":"",
+                },
                 tableData: [{
                     "requestCron": "0/10 * * * * ? ",
                     "requestId": "1",
@@ -173,6 +206,21 @@
             },
             handleDelete:function(){
             },
+            submitForm:function(formName) {
+                //发送get请求
+                this.$http.post('${request.contextPath}/urlTask/save',this.formData,{emulateJSON:false}).then(function(res){
+                    if(res.body.code==0){
+                        this.$confirm(res.body.msg);
+                        //登录成功跳转
+                    }else{
+                        this.$confirm(res.body.msg);
+                    }
+                    this.dialogFormVisible = false;
+                },function(){
+                    console.log('请求失败处理');
+                });
+
+            }
         }
     }
     var Ctor = Vue.extend(Main)
