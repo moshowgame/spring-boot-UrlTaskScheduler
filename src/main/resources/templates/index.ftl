@@ -52,7 +52,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         //发送get请求
-                        this.$http.post('${request.contextPath}/login',{username:"菜鸟教程",password:"http://www.runoob.com"},{emulateJSON:true}).then(function(res){
+                        this.$http.post('${request.contextPath}/login',this.ruleForm,{emulateJSON:true}).then(function(res){
                             if(res.body.code==0){
                                 this.$confirm(res.body.msg);
                                 //登录成功跳转

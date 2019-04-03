@@ -1,27 +1,12 @@
-# spring-boot-EasyUrlTask
-什么是EasyUrlTask？
+# EasyUrlTask
 ----
-EasyUrlTask也叫EasyUrlJob、EasyUrlSchedule，基于Quartz 2.3 and SpringBoot2 的URL接口调度平台，支持集群。
+EasyUrlTask也叫EasyUrlJob、EasyUrlSchedule，基于Quartz 2.3 and SpringBoot2 的URL接口调度平台，支持集群。公司日常的很多任务调度其实都可以简化为基于URL的调度方式，EasyUrlTask也就因此而生，简化日常URL调度任务，并简单管理这些请求。
 
 EasyUrlTask的核心是什么？
 ----
-Quartz是系统的基础，URL Request Plugin是核心调度封装。
+Quartz+SpringBoot是系统的基础，URL Request是核心调度封装，包含TokenAddition（Header Token、Form Token、Url Token）、RequestParam（FormData或JSON，GET/POST）、ResponseAssert（响应断言，根据返回结果判断是否成功，例如设置keyword="code":"00",state=1，匹配到返回对象包含keyword则代表成功，否则失败）。
 
-URL Request Plugin
-----
-包含Request Loader（TokenAddition、RequestParam、ResponseAssert）、WebAdminUI。
 
-TokenAddition追加Token方式
-----
-Header Token、Form Token、Url Token，三种追加token的方式，部分系统的token是不一样的，甚至可能要针对参数做加密，这里只针对固定token，其他情况可能需要做个例外，或者多做一些支持。
-
-RequestParam
-----
-请求参数，表单或JSON，GET/POST。
-
-ResponseAssert
-----
-响应断言，根据返回结果判断是否成功，例如设置{"code":"00"}，匹配到返回对象有code=00则代表成功，否则失败。
 
 T_TASK_TRIGGERS表 TRIGGER_STATE字段
 ----
@@ -31,7 +16,7 @@ T_TASK_TRIGGERS表 TRIGGER_STATE字段
 - BLOCKED：阻塞 
 - ERROR：错误
 
-#####目前进度30%
+#####目前进度40%
 - quartz√
 - druid√
 - springboot2√
@@ -42,7 +27,7 @@ T_TASK_TRIGGERS表 TRIGGER_STATE字段
 - request token
 - request params
 - request assert
-- response log
+- response log√
 - login html
 - list html
 - ui component

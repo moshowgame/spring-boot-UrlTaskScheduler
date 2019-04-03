@@ -12,6 +12,9 @@
     <!-- 弹出层 -->
     <el-dialog title="TASK定时任务" :visible.sync="dialogFormVisible">
         <el-form :model="formData">
+            <el-form-item label="任务ID" :label-width="formLabelWidth">
+                <el-input v-model="formData.requestId" autocomplete="off"></el-input>
+            </el-form-item>
             <el-form-item label="任务名称" :label-width="formLabelWidth">
                 <el-input v-model="formData.requestName" autocomplete="off"></el-input>
             </el-form-item>
@@ -47,12 +50,18 @@
         <el-table-column
                 prop="requestId"
                 label="任务ID"
-                width="120">
+                width="100">
         </el-table-column>
         <el-table-column
                 prop="requestName"
                 label="任务名称"
-                width="240">
+                width="200">
+        </el-table-column>
+        <el-table-column
+                prop="requestUrl"
+                label="请求URL"
+                :show-overflow-tooltip="true"
+                width="200">
         </el-table-column>
         <el-table-column
                 prop="requestCron"
@@ -63,7 +72,7 @@
                 prop="status"
                 :formatter="formatterStatus"
                 label="任务状态"
-                width="120">
+                width="80">
         </el-table-column>
 
         <el-table-column label="操作">
@@ -71,7 +80,7 @@
                 <el-button
                         size="mini"
                         type="info"
-                        @click="dialogFormVisible = true">修改
+                        @click="handleEdit(scope.$index,scope.row)">修改
                 </el-button>
                 <el-button
                         size="mini"
@@ -81,12 +90,12 @@
                 <el-button
                         size="mini"
                         type="warning"
-                        @click="handleEdit(scope.$index, scope.row)">暂停
+                        @click="handleStop(scope.$index, scope.row)">暂停
                 </el-button>
                 <el-button
                         size="mini"
                         type="success"
-                        @click="handleEdit(scope.$index, scope.row)">继续
+                        @click="handleContinue(scope.$index, scope.row)">继续
                 </el-button>
                 <el-button
                         size="mini"
@@ -150,13 +159,12 @@
                     this.total= res.data.total;
                     this.pageNo=res.data.pageNo;
                     this.pageSize=res.data.pageSize;
-                })
-                    .catch(function (error) {
+                }).catch(function (error) {
                         console.log(error);
                     });
             },
-            formatterStatus: function (row, column) {
-                switch(row.status){
+            formatterStatus: function (val) {
+                switch(val.status){
                     case 0:
                         return '停止';
                         break;
@@ -180,14 +188,111 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '启动成功^_^'
+                    //action
+                    this.$http.post('${request.contextPath}/urlTask/start',column,{emulateJSON:true}).then(function(res){
+                        if(res.body.code==0){
+                            this.$confirm(res.body.msg);
+                            //登录成功跳转
+                        }else{
+                            this.$confirm(res.body.msg);
+                        }
+                    },function(){
+                        this.$message({
+                            type: 'error',
+                            message: '启动失败^_^'
+                        });
                     });
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '取消启动=.='
+                    });
+                });
+            },
+            handleContinue(row, column) {
+                this.$confirm('此操作将继续执行任务, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    //action
+                    this.$http.post('${request.contextPath}/urlTask/continue',column,{emulateJSON:true}).then(function(res){
+                        if(res.body.code==0){
+                            this.$confirm(res.body.msg);
+                            //登录成功跳转
+                        }else{
+                            this.$confirm(res.body.msg);
+                        }
+                    },function(){
+                        this.$message({
+                            type: 'error',
+                            message: '继续任务失败^_^'
+                        });
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消操作=.='
+                    });
+                });
+            },
+            handleStop(row, column) {
+                this.$confirm('此操作将停止任务, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    //action
+                    this.$http.post('${request.contextPath}/urlTask/stop',column,{emulateJSON:true}).then(function(res){
+                        if(res.body.code==0){
+                            this.$confirm(res.body.msg);
+                            //登录成功跳转
+                        }else{
+                            this.$confirm(res.body.msg);
+                        }
+                    },function(){
+                        this.$message({
+                            type: 'error',
+                            message: '停用失败^_^'
+                        });
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消操作=.='
+                    });
+                });
+            },
+            handleEdit(row, column) {
+                console.log(column);
+                this.dialogFormVisible = true;
+                this.formData=column;
+            },
+            handleDelete(row, column) {
+                this.$confirm('此操作将停止并删除任务, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    //action
+                    this.$http.post('${request.contextPath}/urlTask/delete',column,{emulateJSON:true}).then(function(res){
+                        if(res.body.code==0){
+                            this.$confirm(res.body.msg);
+                            //登录成功跳转
+                        }else{
+                            this.$confirm(res.body.msg);
+                        }
+                    },function(){
+                        this.$message({
+                            type: 'error',
+                            message: '删除失败^_^'
+                        });
+                    });
+
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消操作=.='+e.toString()
                     });
                 });
             },
@@ -202,10 +307,6 @@
             /*mounted: function () {
                 this.getData();
             },*/
-            handleEdit:function(){
-            },
-            handleDelete:function(){
-            },
             submitForm:function(formName) {
                 //发送get请求
                 this.$http.post('${request.contextPath}/urlTask/save',this.formData,{emulateJSON:false}).then(function(res){
@@ -216,6 +317,13 @@
                         this.$confirm(res.body.msg);
                     }
                     this.dialogFormVisible = false;
+                    this.formData = {
+                            "requestId":"",
+                            "requestName":"",
+                            "requestCron":"",
+                            "requestMethod":"",
+                            "requestUrl":"",
+                    };
                 },function(){
                     console.log('请求失败处理');
                 });

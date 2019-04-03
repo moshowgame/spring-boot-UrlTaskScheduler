@@ -34,9 +34,7 @@ public class UrlTaskController {
 
     @PostMapping("/list")
     public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize){
-        log.info("任务列表");
-        log.info("pageNo:"+pageNo);
-        log.info("pageSize:"+pageSize);
+        log.info("任务列表  pageNo:"+pageNo +" pageSize:"+pageSize);
         Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize);
         Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
         return Result.page(data,pageNo,pageSize,total);
@@ -91,7 +89,7 @@ public class UrlTaskController {
             scheduler.deleteJob(jobKey);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error();
+            return Result.error(e.getMessage());
         }
         return Result.ok();
     }
@@ -99,6 +97,18 @@ public class UrlTaskController {
     public Result test(@RequestBody Map<String,Object> map){
         log.info("RequestMap:"+ JSON.toJSONString(map));
         return Result.ok("请求成功");
+    }
+    @PostMapping("/delete")
+    public  Result delete(UrlRequest urlRequest) {
+        log.info("移除任务:"+urlRequest.getRequestId());
+        if(urlRequest.getRequestId()!=null&&urlRequestMapper.selectById(urlRequest.getRequestId())!=null){
+            //先移除任务
+            remove(urlRequest.getRequestId());
+            urlRequestMapper.deleteById(urlRequest.getRequestId());
+            return Result.ok("删除成功");
+        }else{
+            return Result.ok("删除成功");
+        }
     }
     @PostMapping("/start")
     public Result start(String requestId){
@@ -155,7 +165,8 @@ public class UrlTaskController {
                     new UpdateWrapper<UrlRequest>()
                             .eq("request_name",urlRequest.getRequestName())
                             .eq("request_cron",urlRequest.getRequestCron())
-                            .eq("request_rul",urlRequest.getRequestUrl())
+                            .eq("request_url",urlRequest.getRequestUrl())
+                            .eq("request_method",urlRequest.getRequestMethod())
             );
         }else{
             urlRequestMapper.insert(urlRequest);
