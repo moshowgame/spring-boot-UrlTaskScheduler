@@ -8,145 +8,203 @@
 
 </head>
 <body>
-<div id="app">
-    <!-- 弹出层 -->
-    <el-dialog title="TASK定时任务" :visible.sync="dialogFormVisible">
-        <el-form :model="formData">
-            <el-form-item label="任务ID" :label-width="formLabelWidth">
-                <el-input v-model="formData.requestId" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="任务名称" :label-width="formLabelWidth">
-                <el-input v-model="formData.requestName" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="请求方式" :label-width="formLabelWidth">
-                <el-select v-model="formData.requestMethod" placeholder="请选择请求方式">
-                    <el-option label="POST" value="POST"></el-option>
-                    <el-option label="GET" value="GET"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="CRON表达式" :label-width="formLabelWidth">
-                <el-input v-model="formData.requestCron" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="请求URL" :label-width="formLabelWidth">
-                <el-input v-model="formData.requestUrl" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary"  @click="submitForm('formData')">确 定</el-button>
-        </div>
-    </el-dialog>
-    <!-- 分页 -->
-    <el-table
-            ref="multipleTable"
-            :data="tableData"
-            tooltip-effect="dark"
-            width=" 99.9%"
-            @selection-change="handleSelectionChange">
-        <el-table-column
-                type="selection"
-                width="55">
-        </el-table-column>
-        <el-table-column
-                prop="requestId"
-                label="任务ID"
-                width="100">
-        </el-table-column>
-        <el-table-column
-                prop="requestName"
-                label="任务名称"
-                width="200">
-            <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top">
-                    <p>任务名称: {{ scope.row.requestName }}</p>
-                    <#--<p>住址: {{ scope.row.address }}</p>-->
-                    <div slot="reference" class="name-wrapper">
-                        <el-tag size="medium">{{ scope.row.requestName }}</el-tag>
+
+<el-container>
+
+    <el-container>
+        <el-header>
+            <#--<el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item>EasyTask</el-breadcrumb-item>
+                <el-breadcrumb-item>任务管理</el-breadcrumb-item>
+                <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+            </el-breadcrumb>-->
+        </el-header>
+        <el-main>
+            <#--内容展示-->
+            <div id="app">
+                <!-- 弹出层 -->
+                <el-dialog title="TASK定时任务" :visible.sync="dialogFormVisible">
+                    <el-form :model="formData">
+                        <el-form-item label="任务ID" :label-width="formLabelWidth">
+                            <el-input v-model="formData.requestId" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="任务名称" :label-width="formLabelWidth">
+                            <el-input v-model="formData.requestName" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="请求方式" :label-width="formLabelWidth">
+                            <el-select v-model="formData.requestMethod" placeholder="请选择请求方式">
+                                <el-option label="POST" value="POST"></el-option>
+                                <el-option label="GET" value="GET"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="CRON表达式" :label-width="formLabelWidth">
+                            <el-input v-model="formData.requestCron" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="请求URL" :label-width="formLabelWidth">
+                            <el-input v-model="formData.requestUrl" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                        <el-button type="primary"  @click="submitForm('formData')">确 定</el-button>
                     </div>
-                </el-popover>
-            </template>
-        </el-table-column>
-        <el-table-column
-                prop="requestUrl"
-                label="请求URL"
-                :show-overflow-tooltip="true"
-                width="200">
-        </el-table-column>
-        <el-table-column
-                label="计划时间"
-                width="120">
-            <template slot-scope="scope">
-                <i class="el-icon-time"></i>
-                <span style="margin-left: 1px">{{ scope.row.requestCron }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column
-                prop="status"
-                :formatter="formatterStatus"
-                label="任务状态"
-                width="80">
-        </el-table-column>
-        <el-table-column
-                prop="triggerState"
-                label="Quartz状态"
-                width="80">
-        </el-table-column>
-        <el-table-column label="操作">
-            <template slot="header" slot-scope="scope">
-                <el-input
-                        v-model="search"
-                        size="mini"  @change="search_change()"
-                        placeholder="输入关键字搜索"/>
-                <i
-                        class="el-icon-search el-input__icon"
-                        slot="suffix">
-                </i>
-            </template>
-            <template slot-scope="scope">
-                <el-button
-                        size="mini"
-                        type="info"
-                        @click="handleCopy(scope.$index,scope.row)">复制
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="info"
-                        @click="handleEdit(scope.$index,scope.row)">修改
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="primary"
-                        @click="handleStart(scope.$index, scope.row)">启动
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="warning"
-                        @click="handleStop(scope.$index, scope.row)">停止
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="success"
-                        @click="handleTrigger(scope.$index, scope.row)">触发一次
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="danger"
-                        @click="handleDelete(scope.$index, scope.row)">删除
-                </el-button>
-            </template>
-        </el-table-column>
-    </el-table>
-    <div style="text-align: center;margin-top: 30px;">
-        <el-pagination
-                background
-                layout="prev, pager, next"
-                :total="total" :page-size="pageSize"
-                @current-change="current_change">
-        </el-pagination>
-    </div>
-</div>
+                </el-dialog>
+                <!-- 分页 -->
+                <el-table
+                        ref="multipleTable"
+                        :data="tableData"
+                        tooltip-effect="dark"
+                        width=" 99.9%"
+                        @selection-change="handleSelectionChange">
+                    <el-table-column
+                            type="selection"
+                            width="50">
+                    </el-table-column>
+                    <el-table-column
+                            prop="requestId"
+                            label="任务ID"
+                            width="100">
+                    </el-table-column>
+                    <el-table-column
+                            prop="requestName"
+                            label="任务名称"
+                            width="200">
+                        <template slot-scope="scope">
+                            <el-popover trigger="hover" placement="top">
+                                <p>任务名称: {{ scope.row.requestName }}</p>
+                                <p>请求方式: {{ scope.row.requestMethod }}</p>
+                                <p>请求URL: {{ scope.row.requestUrl }}</p>
+                                <p>下次执行: {{ scope.row.nextFireTime }}</p>
+                                <div slot="reference" class="name-wrapper">
+                                    <el-tag size="medium">{{ scope.row.requestName }}</el-tag>
+                                </div>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="requestUrl"
+                            label="请求URL"
+                            :show-overflow-tooltip="true"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            label="计划时间"
+                            >
+                        <template slot-scope="scope">
+                            <i class="el-icon-time"></i>
+                            <span style="margin-left: 1px">{{ scope.row.requestCron }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="status"
+                            <#--:formatter="formatterStatus"-->
+                            label="任务状态"
+                            >
+                        <template slot-scope="scope">
+                            <el-popover trigger="hover" placement="top">
+                                <p>任务状态: {{ formatterStatus(scope.row.status) }}</p>
+                                <p>Quartz状态: {{ scope.row.triggerState }}</p>
+                                <div slot="reference" class="name-wrapper">
+                                    {{ formatterStatus(scope.row.status) }}
+                                </div>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot="header" slot-scope="scope">
+                            <el-input
+                                    v-model="search"
+                                    size="mini"  @change="search_change()"
+                                    placeholder="输入关键字搜索"/>
+                            <i
+                                    class="el-icon-search el-input__icon"
+                                    slot="suffix">
+                            </i>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-dropdown>
+                                  <span class="el-dropdown-link">
+                                      <el-button plain>
+                                        任务操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                      </el-button>
+                                  </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="info"
+                                                @click="handleCopy(scope.$index,scope.row)">复制
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="info"
+                                                @click="handleEdit(scope.$index,scope.row)">修改
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="primary"
+                                                @click="handleStart(scope.$index, scope.row)">启动
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="warning"
+                                                @click="handleStop(scope.$index, scope.row)">停止
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="success"
+                                                @click="handleTrigger(scope.$index, scope.row)">触发一次
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="danger"
+                                                @click="handleDelete(scope.$index, scope.row)">删除
+                                        </el-button>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div style="text-align: center;margin-top: 30px;">
+                    <el-pagination
+                            background
+                            layout="prev, pager, next"
+                            :total="total" :page-size="pageSize"
+                            @current-change="current_change">
+                    </el-pagination>
+                </div>
+            </div>
+        </el-main>
+    </el-container>
+</el-container>
+
+
 </body>
 <@common.commonScript />
+<style>
+    .el-header {
+        background-color: #B3C0D1;
+        color: #333;
+        line-height: 60px;
+    }
+
+    .el-aside {
+        color: #333;
+    }
+</style>
+
 <script>
     var Main = {
         data() {
@@ -196,18 +254,12 @@
                     });
             },
             formatterStatus: function (val) {
-                switch(val.status){
+                switch(val){//.status
                     case 0:
                         return '停止';
                         break;
                     case 1:
                         return '启动';
-                        break;
-                    case  2:
-                        return '禁用';
-                        break;
-                    case 3:
-                        return '暂停';
                         break;
                     default:
                         return '未知';

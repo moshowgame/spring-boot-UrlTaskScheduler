@@ -12,6 +12,7 @@ import com.software.dev.mapper.UrlRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -34,8 +35,8 @@ public class UrlTaskController {
 
     @PostMapping("/list")
     public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize,String search){
-        log.info("任务列表  pageNo:"+pageNo +" pageSize:"+pageSize);
-        Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize,search);
+        log.info("任务列表  pageNo:"+pageNo +" pageSize:"+pageSize+" search:"+search);
+        Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize,(StringUtils.isEmpty(search))?null:search);
         Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
         return Result.page(data,pageNo,pageSize,total);
     }
