@@ -41,7 +41,7 @@
             ref="multipleTable"
             :data="tableData"
             tooltip-effect="dark"
-            style="width: 100%"
+            width=" 99.9%"
             @selection-change="handleSelectionChange">
         <el-table-column
                 type="selection"
@@ -56,6 +56,15 @@
                 prop="requestName"
                 label="任务名称"
                 width="200">
+            <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top">
+                    <p>任务名称: {{ scope.row.requestName }}</p>
+                    <#--<p>住址: {{ scope.row.address }}</p>-->
+                    <div slot="reference" class="name-wrapper">
+                        <el-tag size="medium">{{ scope.row.requestName }}</el-tag>
+                    </div>
+                </el-popover>
+            </template>
         </el-table-column>
         <el-table-column
                 prop="requestUrl"
@@ -64,9 +73,12 @@
                 width="200">
         </el-table-column>
         <el-table-column
-                prop="requestCron"
-                label="执行时间表达式"
+                label="计划时间"
                 width="120">
+            <template slot-scope="scope">
+                <i class="el-icon-time"></i>
+                <span style="margin-left: 1px">{{ scope.row.requestCron }}</span>
+            </template>
         </el-table-column>
         <el-table-column
                 prop="status"
@@ -74,9 +86,28 @@
                 label="任务状态"
                 width="80">
         </el-table-column>
-
+        <el-table-column
+                prop="triggerState"
+                label="Quartz状态"
+                width="80">
+        </el-table-column>
         <el-table-column label="操作">
+            <template slot="header" slot-scope="scope">
+                <el-input
+                        v-model="search"
+                        size="mini"  @change="search_change()"
+                        placeholder="输入关键字搜索"/>
+                <i
+                        class="el-icon-search el-input__icon"
+                        slot="suffix">
+                </i>
+            </template>
             <template slot-scope="scope">
+                <el-button
+                        size="mini"
+                        type="info"
+                        @click="handleCopy(scope.$index,scope.row)">复制
+                </el-button>
                 <el-button
                         size="mini"
                         type="info"
@@ -90,12 +121,12 @@
                 <el-button
                         size="mini"
                         type="warning"
-                        @click="handleStop(scope.$index, scope.row)">暂停
+                        @click="handleStop(scope.$index, scope.row)">停止
                 </el-button>
                 <el-button
                         size="mini"
                         type="success"
-                        @click="handleContinue(scope.$index, scope.row)">继续
+                        @click="handleTrigger(scope.$index, scope.row)">触发一次
                 </el-button>
                 <el-button
                         size="mini"
@@ -136,6 +167,7 @@
                     "requestId": "DEFAULT",
                     "status": "ACQUIRED"
                 }],
+                search:"",
                 multipleSelection: [],
                 total: 1,
                 pageSize:3,
@@ -152,7 +184,7 @@
                 this.$http({
                     method: 'POST',
                     url: '${request.contextPath}/urlTask/list',
-                    params:{pageNo:this.pageNo,pageSize:this.pageSize}
+                    params:{pageNo:this.pageNo,pageSize:this.pageSize,search:this.search}
                 }).then(res => {
                     console.log(res);
                     this.tableData = res.data.msg;
@@ -191,10 +223,10 @@
                     //action
                     this.$http.post('${request.contextPath}/urlTask/start',column,{emulateJSON:true}).then(function(res){
                         if(res.body.code==0){
-                            this.$confirm(res.body.msg);
-                            //登录成功跳转
+                            //操作成功则刷新
+                            this.current_change(this.pageNo);
                         }else{
-                            this.$confirm(res.body.msg);
+                            this.$message({type: 'error',message: res.body.msg});
                         }
                     },function(){
                         this.$message({
@@ -209,30 +241,28 @@
                     });
                 });
             },
-            handleContinue(row, column) {
-                this.$confirm('此操作将继续执行任务, 是否继续?', '提示', {
+            handleTrigger(row, column) {
+                this.$confirm('此操作将单独触发一次任务, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     //action
-                    this.$http.post('${request.contextPath}/urlTask/continue',column,{emulateJSON:true}).then(function(res){
+                    this.$http.post('${request.contextPath}/urlTask/trigger',column,{emulateJSON:true}).then(function(res){
                         if(res.body.code==0){
-                            this.$confirm(res.body.msg);
-                            //登录成功跳转
                         }else{
-                            this.$confirm(res.body.msg);
+                            this.$message({type: 'error',message: res.body.msg});
                         }
                     },function(){
                         this.$message({
                             type: 'error',
-                            message: '继续任务失败^_^'
+                            message: '触发失败^_^'
                         });
                     });
                 }).catch(() => {
                     this.$message({
                         type: 'info',
-                        message: '取消操作=.='
+                        message: '取消触发=.='
                     });
                 });
             },
@@ -243,12 +273,12 @@
                     type: 'warning'
                 }).then(() => {
                     //action
-                    this.$http.post('${request.contextPath}/urlTask/stop',column,{emulateJSON:true}).then(function(res){
+                    this.$http.post('${request.contextPath}/urlTask/pause',column,{emulateJSON:true}).then(function(res){
                         if(res.body.code==0){
-                            this.$confirm(res.body.msg);
-                            //登录成功跳转
+                            //操作成功则刷新
+                            this.current_change(this.pageNo);
                         }else{
-                            this.$confirm(res.body.msg);
+                            this.$message({type: 'error',message: res.body.msg});
                         }
                     },function(){
                         this.$message({
@@ -268,6 +298,12 @@
                 this.dialogFormVisible = true;
                 this.formData=column;
             },
+            handleCopy(row, column) {
+                console.log(column);
+                this.dialogFormVisible = true;
+                this.formData=column;
+                this.formData.requestId=column.requestId+"COPY";
+            },
             handleDelete(row, column) {
                 this.$confirm('此操作将停止并删除任务, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -277,10 +313,10 @@
                     //action
                     this.$http.post('${request.contextPath}/urlTask/delete',column,{emulateJSON:true}).then(function(res){
                         if(res.body.code==0){
-                            this.$confirm(res.body.msg);
-                            //登录成功跳转
+                            //操作成功则刷新
+                            this.current_change(this.pageNo);
                         }else{
-                            this.$confirm(res.body.msg);
+                            this.$message({type: 'error',message: res.body.msg});
                         }
                     },function(){
                         this.$message({
@@ -302,17 +338,18 @@
                 this.pageNo = pageNo;
                 this.tableData=[];
                 this.fetchData();
-                console.log("current_change:"+this.tableData);
             },
-            /*mounted: function () {
-                this.getData();
-            },*/
+            search_change:function(){
+                this.tableData=[];
+                this.fetchData();
+            },
             submitForm:function(formName) {
                 //发送get请求
                 this.$http.post('${request.contextPath}/urlTask/save',this.formData,{emulateJSON:false}).then(function(res){
                     if(res.body.code==0){
                         this.$confirm(res.body.msg);
-                        //登录成功跳转
+                        //操作成功则刷新
+                        this.current_change(this.pageNo);
                     }else{
                         this.$confirm(res.body.msg);
                     }
@@ -327,7 +364,6 @@
                 },function(){
                     console.log('请求失败处理');
                 });
-
             }
         }
     }

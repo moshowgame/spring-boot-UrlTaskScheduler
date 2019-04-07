@@ -63,4 +63,16 @@ public class UrlRequest implements Serializable {
         public static String GET="GET";
         public static String POST="POST";
     }
+
+    @Data
+    /**
+     *                      case 0:return '停止';
+     *                     case 1:return '启动';
+     *                     case  2:return '禁用';
+     *                     case 3:return '暂停';
+     * */
+    public static class RequestStatus{
+        public static Integer STOP=0;
+        public static Integer START=1;
+    }
 }

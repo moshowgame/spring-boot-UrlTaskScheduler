@@ -33,9 +33,9 @@ public class UrlTaskController {
     private UrlRequestMapper urlRequestMapper;
 
     @PostMapping("/list")
-    public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize){
+    public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize,String search){
         log.info("任务列表  pageNo:"+pageNo +" pageSize:"+pageSize);
-        Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize);
+        Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize,search);
         Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
         return Result.page(data,pageNo,pageSize,total);
     }
@@ -47,35 +47,51 @@ public class UrlTaskController {
             scheduler.triggerJob(key);
         } catch (SchedulerException e) {
             e.printStackTrace();
-            return Result.error();
+            return Result.error(e.getMessage());
         }
         return Result.ok();
     }
     @PostMapping("/pause")
     public  Result pause(String requestId) {
-        log.info("停止任务:"+requestId);
+        log.info("暂停任务:"+requestId);
         try {
             JobKey key = new JobKey(requestId,UrlJob.DEFAULT_GROUP);
             scheduler.pauseJob(key);
+            //修改对应状态
+            UrlRequest urlRequest=urlRequestMapper.selectById(requestId);
+            if(urlRequest!=null) {
+                urlRequest.setStatus(UrlRequest.RequestStatus.STOP);
+                urlRequestMapper.update(urlRequest,
+                        new UpdateWrapper<UrlRequest>().eq("request_id", urlRequest.getRequestId())
+                );
+            }
         } catch (SchedulerException e) {
             e.printStackTrace();
-            return Result.error();
+            return Result.error(e.getMessage());
         }
         return Result.ok();
     }
+    @Deprecated
     @PostMapping("/resume")
     public  Result resume(String requestId) {
         log.info("恢复任务:"+ requestId);
         try {
             JobKey key = new JobKey(requestId,UrlJob.DEFAULT_GROUP);
             scheduler.resumeJob(key);
+            //修改对应状态
+            UrlRequest urlRequest=urlRequestMapper.selectById(requestId);
+            if(urlRequest!=null) {
+                urlRequest.setStatus(UrlRequest.RequestStatus.START);
+                urlRequestMapper.update(urlRequest,
+                        new UpdateWrapper<UrlRequest>().eq("request_id", urlRequest.getRequestId())
+                );
+            }
         } catch (SchedulerException e) {
             e.printStackTrace();
-            return Result.error();
+            return Result.error(e.getMessage());
         }
         return Result.ok();
     }
-    @PostMapping("/remove")
     public  Result remove(String requestId) {
         log.info("移除任务:"+requestId);
         try {
@@ -87,6 +103,14 @@ public class UrlTaskController {
             scheduler.unscheduleJob(triggerKey);
             // 删除任务
             scheduler.deleteJob(jobKey);
+            //修改对应状态
+            UrlRequest urlRequest=urlRequestMapper.selectById(requestId);
+            if(urlRequest!=null) {
+                urlRequest.setStatus(UrlRequest.RequestStatus.STOP);
+                urlRequestMapper.update(urlRequest,
+                        new UpdateWrapper<UrlRequest>().eq("request_id", urlRequest.getRequestId())
+                );
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());
@@ -112,7 +136,7 @@ public class UrlTaskController {
     }
     @PostMapping("/start")
     public Result start(String requestId){
-        log.info("新增任务");
+        log.info("启动任务:"+requestId);
         UrlRequest urlRequest=urlRequestMapper.selectOne(new QueryWrapper<UrlRequest>().eq("request_id",requestId));
         if(urlRequest!=null){
             try {
@@ -138,9 +162,14 @@ public class UrlTaskController {
                         .startNow().withSchedule(cronScheduleBuilder).build();
                 //交由Scheduler安排触发
                 scheduler.scheduleJob(job, trigger);
+                //修改对应状态
+                urlRequest.setStatus(UrlRequest.RequestStatus.START);
+                urlRequestMapper.update(urlRequest,
+                        new UpdateWrapper<UrlRequest>().eq("request_id", urlRequest.getRequestId())
+                );
             } catch (Exception e) {
                 e.printStackTrace();
-                return Result.error();
+                return Result.error(e.getMessage());
             }
         }
         return Result.ok();
@@ -163,10 +192,7 @@ public class UrlTaskController {
         if(urlRequestMapper.selectById(urlRequest.getRequestId())!=null){
             urlRequestMapper.update(urlRequest,
                     new UpdateWrapper<UrlRequest>()
-                            .eq("request_name",urlRequest.getRequestName())
-                            .eq("request_cron",urlRequest.getRequestCron())
-                            .eq("request_url",urlRequest.getRequestUrl())
-                            .eq("request_method",urlRequest.getRequestMethod())
+                            .eq("request_id",urlRequest.getRequestId())
             );
         }else{
             urlRequestMapper.insert(urlRequest);

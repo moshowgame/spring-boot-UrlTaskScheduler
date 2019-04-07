@@ -13,7 +13,8 @@ public interface UrlRequestMapper extends BaseMapper<UrlRequest> {
     @Select("<script>"+
             " select t.*,tri.TRIGGER_STATE,tri.NEXT_FIRE_TIME from url_request t " +
             " left join qrtz_triggers tri on t.request_id=tri.JOB_NAME  order by t.request_id desc"
+            + "<if test='search!=null'> where t.request_id = '#{search}' t.request_name like '%#{search}%' or t.request_url like '%#{search}%'</if></script>"
             + "<if test='pageStart!=null and pageSize != null '> LIMIT  #{pageStart},#{pageSize} </if></script>")
-    List<UrlRequest> listUrl(Integer pageStart,Integer pageSize);
+    List<UrlRequest> listUrl(Integer pageStart,Integer pageSize,String search);
 
 }
