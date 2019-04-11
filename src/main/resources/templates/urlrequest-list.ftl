@@ -132,6 +132,13 @@
                                     <el-dropdown-item>
                                         <el-button
                                                 size="mini"
+                                                type="success"
+                                                @click="handleLog(scope.$index,scope.row)">查看日志
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
                                                 type="info"
                                                 @click="handleCopy(scope.$index,scope.row)">复制
                                         </el-button>
@@ -351,10 +358,13 @@
                 this.formData=column;
             },
             handleCopy(row, column) {
-                console.log(column);
                 this.dialogFormVisible = true;
-                this.formData=column;
+                //this.formData=column会导致修改表单的值，表格的值也会变，格式化一下即可解决这个问题
+                this.formData= JSON.parse(JSON.stringify(column)) ;
                 this.formData.requestId=column.requestId+"COPY";
+            },
+            handleLog(row, column) {
+                window.open ('${request.contextPath}/log/page?requestId='+column.requestId, '日志查看', 'height=400, width=800, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
             },
             handleDelete(row, column) {
                 this.$confirm('此操作将停止并删除任务, 是否继续?', '提示', {

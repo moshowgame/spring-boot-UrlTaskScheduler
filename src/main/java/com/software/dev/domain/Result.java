@@ -1,5 +1,7 @@
 package com.software.dev.domain;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +36,14 @@ public class Result extends HashMap<String, Object> {
         r.put("total", total);
         return r;
     }
-
+    public static Result page(IPage page) {
+        Result r = new Result();
+        r.put("msg", page.getRecords());
+        r.put("pageNo", page.getCurrent());
+        r.put("pageSize", page.getSize());
+        r.put("total", page.getTotal());
+        return r;
+    }
     public static Result ok(Object msg) {
         Result r = new Result();
         r.put("msg", msg);

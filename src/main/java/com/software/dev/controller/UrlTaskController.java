@@ -5,10 +5,14 @@ import cn.hutool.core.lang.Console;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dev.domain.Result;
 import com.software.dev.domain.UrlRequest;
+import com.software.dev.domain.UrlResponse;
 import com.software.dev.job.UrlJob;
 import com.software.dev.mapper.UrlRequestMapper;
+import com.software.dev.mapper.UrlResponseMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +36,28 @@ public class UrlTaskController {
     private Scheduler scheduler;
     @Autowired
     private UrlRequestMapper urlRequestMapper;
+    @Autowired
+    private UrlResponseMapper urlResponseMapper;
 
     @PostMapping("/list")
     public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize,String search){
         log.info("任务列表  pageNo:"+pageNo +" pageSize:"+pageSize+" search:"+search);
+        //手动分页
         Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize,(StringUtils.isEmpty(search))?null:search);
         Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
         return Result.page(data,pageNo,pageSize,total);
+    }
+
+    @PostMapping("/log/list")
+    public Result logList(@RequestParam(required = true)String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize,String search){
+        log.info("日志列表  pageNo:"+pageNo +" pageSize:"+pageSize+" search:"+search);
+        //自带分页
+        Page<UrlResponse> page=new Page<>(pageNo.longValue(),pageSize.longValue());
+        IPage<UrlResponse> iPage= urlResponseMapper.selectPage(page,
+                (StringUtils.isEmpty(search))?new QueryWrapper<UrlResponse>().eq("request_id",requestId).orderByDesc("response_time")
+                        :new QueryWrapper<UrlResponse>().eq("request_id",requestId).like("response_text",search).orderByDesc("response_time")
+        );
+        return Result.page(iPage);
     }
     @PostMapping("/trigger")
     public  Result trigger(String requestId) {
