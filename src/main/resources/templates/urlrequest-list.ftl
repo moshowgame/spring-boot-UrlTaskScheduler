@@ -105,7 +105,9 @@
                                 <p>任务状态: {{ formatterStatus(scope.row.status) }}</p>
                                 <p>Quartz状态: {{ scope.row.triggerState }}</p>
                                 <div slot="reference" class="name-wrapper">
-                                    {{ formatterStatus(scope.row.status) }}
+                                    <el-tag
+                                            :type="scope.row.status == '1' ? 'success' : 'danger'"
+                                            disable-transitions>{{ formatterStatus(scope.row.status) }}</el-tag>
                                 </div>
                             </el-popover>
                         </template>
@@ -266,7 +268,7 @@
                         return '停止';
                         break;
                     case 1:
-                        return '启动';
+                        return '启用';
                         break;
                     default:
                         return '未知';
