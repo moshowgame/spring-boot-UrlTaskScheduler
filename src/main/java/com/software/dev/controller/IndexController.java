@@ -36,4 +36,11 @@ public class IndexController {
         log.info("password:"+password);
         return Result.ok("登录成功");
     }
+
+    @RequestMapping("/token/detail")
+    public ModelAndView tokenDetail(@RequestParam(required = true) String requestId){
+        ModelAndView mav = new ModelAndView("token-detail");
+        mav.addObject("requestId",requestId);
+        return mav;
+    }
 }

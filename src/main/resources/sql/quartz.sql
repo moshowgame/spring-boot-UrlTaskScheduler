@@ -288,8 +288,20 @@ CREATE TABLE `url_response`  (
   PRIMARY KEY (`response_id`) USING BTREE
 ) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Records of url_response
--- ----------------------------
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Table structure for url_request_token
+-- ----------------------------
+DROP TABLE IF EXISTS `url_request_token`;
+CREATE TABLE `url_request_token` (
+                                   `request_id` varchar(50) NOT NULL COMMENT '请求id',
+                                   `token_url` varchar(255) DEFAULT NULL COMMENT 'TOKEN请求地址',
+                                   `method` varchar(255) DEFAULT 'POST' COMMENT '请求方式',
+                                   `param` varchar(255) DEFAULT NULL COMMENT '请求参数',
+                                   `param_type` varchar(50) DEFAULT '1' COMMENT '参数方式：1form表单 2json格式/xml',
+                                   `append_name` varchar(255) DEFAULT NULL COMMENT '追加参数名称',
+                                   `append_type` varchar(50) DEFAULT '1' COMMENT '追加方式：1通过url追加 2通过form追加',
+                                   `status` smallint(1) DEFAULT '1' COMMENT '是否启动：1启用 0禁用',
+                                   `token_expression` varchar(255) DEFAULT NULL COMMENT 'TOKEN表达式',
+                                   PRIMARY KEY (`request_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

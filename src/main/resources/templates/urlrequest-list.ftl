@@ -185,6 +185,40 @@
 
                         </template>
                     </el-table-column>
+                    <el-table-column>
+                        <template slot-scope="scope">
+                            <el-dropdown>
+                                  <span class="el-dropdown-link">
+                                      <el-button plain>
+                                        配置<i class="el-icon-arrow-down el-icon--right"></i>
+                                      </el-button>
+                                  </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="success"
+                                                @click="handleRequestToken(scope.$index,scope.row)">配置Token
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="success"
+                                                @click="handleRequestParam(scope.$index,scope.row)">配置请求参数
+                                        </el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <el-button
+                                                size="mini"
+                                                type="info"
+                                                @click="handleResponseAssert(scope.$index,scope.row)">配置响应解析
+                                        </el-button>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <div style="text-align: center;margin-top: 30px;">
                     <el-pagination
@@ -237,7 +271,7 @@
                 search:"",
                 multipleSelection: [],
                 total: 1,
-                pageSize:3,
+                pageSize:10,
                 pageNo:1
             }
         },
@@ -366,6 +400,15 @@
                 this.formData.requestId=column.requestId+"COPY";
             },
             handleLog(row, column) {
+                window.open ('${request.contextPath}/log/page?requestId='+column.requestId, '日志查看', 'height=400, width=800, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
+            },
+            handleRequestToken(row, column) {
+                window.open ('${request.contextPath}/token/detail?requestId='+column.requestId, '配置TOKEN', 'height=400, width=800, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
+            },
+            handleRequestParam(row, column) {
+                window.open ('${request.contextPath}/log/page?requestId='+column.requestId, '日志查看', 'height=400, width=800, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
+            },
+            handleResponseAssert(row, column) {
                 window.open ('${request.contextPath}/log/page?requestId='+column.requestId, '日志查看', 'height=400, width=800, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
             },
             handleDelete(row, column) {

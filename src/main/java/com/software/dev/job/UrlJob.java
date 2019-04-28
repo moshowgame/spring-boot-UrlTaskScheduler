@@ -3,11 +3,15 @@ package com.software.dev.job;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.software.dev.domain.UrlRequest;
+import com.software.dev.domain.UrlRequestToken;
 import com.software.dev.domain.UrlResponse;
 import com.software.dev.mapper.UrlRequestMapper;
+import com.software.dev.mapper.UrlRequestTokenMapper;
 import com.software.dev.mapper.UrlResponseMapper;
+import com.software.dev.service.UrlPlusService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,11 @@ public class UrlJob  implements Job, Serializable {
     private UrlResponseMapper urlResponseMapper;
     @Autowired
     private UrlRequestMapper urlRequestMapper;
+    @Autowired
+    private UrlPlusService urlPlusService;
+    @Autowired
+    private UrlRequestTokenMapper urlRequestTokenMapper;
+
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -60,15 +69,39 @@ public class UrlJob  implements Job, Serializable {
         //Url Request
         if(!StringUtils.isEmpty(urlId)){
             UrlRequest urlRequest=urlRequestMapper.selectOne(new QueryWrapper<UrlRequest>().eq("request_id",urlId));
+            UrlRequestToken urlRequestToken=urlRequestTokenMapper.selectById(urlId);
             //成功找到请求id
             if(urlRequest!=null){
+                String requestUrl=urlRequest.getRequestUrl();
                 log.info("URL REQUEST NAME: " + urlRequest.getRequestName());
-                log.info(urlRequest.getRequestMethod()+":" + urlRequest.getRequestUrl());
+                //如果存在token，
+                if(urlRequestToken!=null&&urlRequestToken.getStatus()){
+                    String tokenStr=urlPlusService.getToken(urlRequestToken);
+                    //处理URL追加类型（优先）
+                    if(UrlRequestToken.AppendType.URL.equals(urlRequestToken.getAppendType())){
+                        if(requestUrl.endsWith(urlRequestToken.getAppendName()+"=")){
+                            //如果预留的尾部一致，例如accessToken=,然后AppendName也叫accessToken，属于匹配追加
+                            requestUrl+=tokenStr;
+                        }else if(requestUrl.contains("?")){
+                            //如果包含问号，则无论有多少个&，继续追加&即可
+                            requestUrl=requestUrl+"&"+urlRequestToken.getAppendName()+"="+tokenStr;
+                        }else{
+                            //如果未包含问号，则需要追加?xxx=xxx
+                            requestUrl=requestUrl+"?"+urlRequestToken.getAppendName()+"="+tokenStr;
+                        }
+                    }else{
+                        //处理FORM追加类型
+
+                    }
+                }
+
+                log.info(urlRequest.getRequestMethod()+":" + requestUrl);
+                //if()
                 //请求GET/POST
                 if(UrlRequest.RequestMethod.GET.equals(urlRequest.getRequestMethod())){
-                    responseMsg = HttpUtil.get(urlRequest.getRequestUrl());
+                    responseMsg = HttpUtil.get(requestUrl);
                 }else if (UrlRequest.RequestMethod.POST.equals(urlRequest.getRequestMethod())){
-                    responseMsg = HttpUtil.post(urlRequest.getRequestUrl(),"");
+                    responseMsg = HttpUtil.post(requestUrl,"");
                 }
                 log.info("RESPONSE TEXT:"+responseMsg);
 

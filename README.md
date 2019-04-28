@@ -14,7 +14,7 @@ EasyUrlTask的核心是什么？
 
 UrlRequestPlus
 ----
-未来会有增强的UrlRequestPlus部分，将会包含TokenAddition（Header Token、Form Token、Url Token）、RequestParam（FormData或JSON，GET/POST）、ResponseAssert（响应断言，根据返回结果判断是否成功，例如设置keyword="code":"00",state=1，匹配到返回对象包含keyword则代表成功，否则失败）。
+未来会有增强的UrlPlus部分，将会包含TokenAddition（Header Token、Form Token、Url Token）、RequestParam（FormData或JSON，GET/POST）、ResponseAssert（响应断言，根据返回结果判断是否成功，例如设置keyword="code":"00",state=1，匹配到返回对象包含keyword则代表成功，否则失败）。
 
 
 T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
@@ -25,16 +25,14 @@ T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
 - BLOCKED：任务阻塞 
 - ERROR：任务错误
 
-URL_REQUEST_STATUS状态
-----
-- 0：停止
-- 1：运行
 
 <img src="./image1.png">
 <img src="./image2.png">
+<img src="./image3.png">
 
 release log
 ----
+ - 2019-04-28 UrlPlus之Url追加Token参数功能，token配置功能，优化gitignore(感谢盛爷)。
  - 2019-04-11 优化管理页面，修复一些细节问题，新增日志查看功能,新增travis。
  - 2019-04-07 优化核心模块核心状态的封装，包含状态变更简化，管理界面优化
  - 2019-04-03 UrlJob里面的Log信息优化
