@@ -3,9 +3,11 @@ package com.software.dev.domain;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *  url_request
@@ -49,6 +51,11 @@ public class UrlRequest implements Serializable {
      * 超时时间ms
      */
     private Integer requestTimeout;
+    /**
+     * 更新时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
     @TableField(exist = false)
     private String triggerState;

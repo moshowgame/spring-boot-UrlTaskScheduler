@@ -2,22 +2,30 @@ package com.software.dev.controller;
 
 import com.software.dev.domain.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @Slf4j
-public class IndexController {
+class IndexController {
 
-    @RequestMapping("/index")
-    public String index(){
-        return "index";
+    @GetMapping("/index")
+    public ModelAndView index(){
+        return new ModelAndView("index");
     }
 
-    @RequestMapping("/page")
+    @GetMapping("/request/list")
+    public ModelAndView requestListPage(){
+        return new ModelAndView("page/request-list");
+    }
+
+    @GetMapping("/token/detail")
+    public ModelAndView tokenDetail(@RequestParam(required = true) String requestId){
+        ModelAndView mav = new ModelAndView("task/token-detail");
+        mav.addObject("requestId",requestId);
+        return mav;
+    }
+/*    @RequestMapping("/page")
     public String page(){
         return "urlrequest-list";
     }
@@ -29,9 +37,23 @@ public class IndexController {
         return mav;
     }
 
+    @GetMapping("/login")
+    public ModelAndView loginPage(){
+        return new ModelAndView("login");
+    }
+    @GetMapping("/index")
+    public ModelAndView index(){
+        log.info("GOTO INDEX");
+        return new ModelAndView("index");
+    }
+    @GetMapping("/main")
+    public ModelAndView main(){
+        return new ModelAndView("main");
+    }
+
     @ResponseBody
-    @RequestMapping("/login")
-    public Object login(String username,String password){
+    @PostMapping("/login")
+    public Object loginAcion(String username,String password){
         log.info("username:"+username);
         log.info("password:"+password);
         return Result.ok("登录成功");
@@ -42,5 +64,5 @@ public class IndexController {
         ModelAndView mav = new ModelAndView("token-detail");
         mav.addObject("requestId",requestId);
         return mav;
-    }
+    }*/
 }

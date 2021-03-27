@@ -6,19 +6,20 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.software.dev.domain.Result;
-import com.software.dev.domain.UrlRequest;
-import com.software.dev.domain.UrlResponse;
+import com.software.dev.domain.*;
 import com.software.dev.job.UrlJob;
 import com.software.dev.mapper.UrlRequestMapper;
 import com.software.dev.mapper.UrlResponseMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,13 +40,20 @@ public class UrlTaskController {
     @Autowired
     private UrlResponseMapper urlResponseMapper;
 
+    @GetMapping("/info")
+    public Result info(PageParam param){
+        return Result.ok().put("data",urlRequestMapper.selectById(param.getId()));
+    }
     @PostMapping("/list")
-    public Result list(String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize,String search){
-        log.info("任务列表  pageNo:"+pageNo +" pageSize:"+pageSize+" search:"+search);
+    public Result list(PageParam param){
+        log.info("任务列表{}",JSON.toJSONString(param));
         //手动分页
-        Object data= urlRequestMapper.listUrl((pageNo-1)*pageSize,pageSize,(StringUtils.isEmpty(search))?null:search);
+        List data= urlRequestMapper.listUrl((param.getPage()-1)*param.getLimit(),param.getLimit(),(StringUtils.isEmpty(param.getSearch()))?null:param.getSearch());
         Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
-        return Result.page(data,pageNo,pageSize,total);
+//        log.info(JSON.toJSONString(data));
+        PageUtils page = new PageUtils(data,total,param.getLimit(),param.getPage());
+
+        return Result.ok().put("page", page);
     }
 
     @PostMapping("/log/list")
@@ -143,15 +151,15 @@ public class UrlTaskController {
         return Result.ok("请求成功");
     }
     @PostMapping("/delete")
-    public  Result delete(UrlRequest urlRequest) {
-        log.info("移除任务:"+urlRequest.getRequestId());
-        if(urlRequest.getRequestId()!=null&&urlRequestMapper.selectById(urlRequest.getRequestId())!=null){
+    public  Result delete(@RequestBody PageParam param) {
+        log.info("移除任务:"+param.getId());
+        if(param.getId()!=null&&urlRequestMapper.selectById(param.getId())!=null){
             //先移除任务
-            remove(urlRequest.getRequestId());
-            urlRequestMapper.deleteById(urlRequest.getRequestId());
+            remove(param.getId());
+            urlRequestMapper.deleteById(param.getId());
             return Result.ok("删除成功");
         }else{
-            return Result.ok("删除成功");
+            return Result.error("记录不存在");
         }
     }
     @PostMapping("/start")
@@ -206,18 +214,21 @@ public class UrlTaskController {
     @PostMapping("/save")
     public  Result save(@RequestBody UrlRequest urlRequest) {
         Console.log(JSON.toJSONString(urlRequest));
-        Assert.notBlank(urlRequest.getRequestName());
-        Assert.notBlank(urlRequest.getRequestCron());
-        Assert.notBlank(urlRequest.getRequestUrl());
+        if(StringUtils.isAnyEmpty(urlRequest.getRequestName(),urlRequest.getRequestCron(),urlRequest.getRequestUrl())){
+            return Result.error("请完整填写所有信息");
+        }
+        if(urlRequest.getStatus()==null){
+            urlRequest.setStatus(0);
+        }
+        if(urlRequest.getRequestMethod()==null){
+            urlRequest.setRequestMethod("GET");
+        }
+        urlRequest.setUpdateTime(new Date());
         if(urlRequestMapper.selectById(urlRequest.getRequestId())!=null){
-            urlRequestMapper.update(urlRequest,
-                    new UpdateWrapper<UrlRequest>()
-                            .eq("request_id",urlRequest.getRequestId())
-            );
+            urlRequestMapper.updateById(urlRequest);
         }else{
             urlRequestMapper.insert(urlRequest);
         }
-
         return Result.ok("保存成功");
     }
 }
