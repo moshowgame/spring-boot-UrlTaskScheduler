@@ -18,6 +18,7 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +45,9 @@ public class UrlTaskController {
     public Result info(PageParam param){
         return Result.ok().put("data",urlRequestMapper.selectById(param.getId()));
     }
-    @PostMapping("/list")
-    public Result list(PageParam param){
-        log.info("任务列表{}",JSON.toJSONString(param));
+    @PostMapping("/request/list")
+    public Result requestList(PageParam param){
+        log.info("请求列表{}",JSON.toJSONString(param));
         //手动分页
         List data= urlRequestMapper.listUrl((param.getPage()-1)*param.getLimit(),param.getLimit(),(StringUtils.isEmpty(param.getSearch()))?null:param.getSearch());
         Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
@@ -56,16 +57,16 @@ public class UrlTaskController {
         return Result.ok().put("page", page);
     }
 
-    @PostMapping("/log/list")
-    public Result logList(@RequestParam(required = true)String requestId,@RequestParam(defaultValue = "1") Integer pageNo,@RequestParam(defaultValue = "5") Integer pageSize,String search){
-        log.info("日志列表  pageNo:"+pageNo +" pageSize:"+pageSize+" search:"+search);
+    @PostMapping("/response/list")
+    public Result responseList(PageParam param){
+        log.info("响应列表{}",JSON.toJSONString(param));
         //自带分页
-        Page<UrlResponse> page=new Page<>(pageNo.longValue(),pageSize.longValue());
-        IPage<UrlResponse> iPage= urlResponseMapper.selectPage(page,
-                (StringUtils.isEmpty(search))?new QueryWrapper<UrlResponse>().eq("request_id",requestId).orderByDesc("response_time")
-                        :new QueryWrapper<UrlResponse>().eq("request_id",requestId).like("response_text",search).orderByDesc("response_time")
+        IPage<UrlResponse> iPage= urlResponseMapper.selectPage(new Page<UrlResponse>(param.getPage(),param.getLimit()),
+                new QueryWrapper<UrlResponse>().eq("request_id",param.getId()).like(StringUtils.isNotEmpty(param.getSearch()),"response_text",param.getSearch()).orderByDesc("response_time")
         );
-        return Result.page(iPage);
+        PageUtils page = new PageUtils(iPage.getRecords(), (int) iPage.getTotal(),param.getLimit(),param.getPage());
+
+        return Result.ok().put("page", page);
     }
     @PostMapping("/trigger")
     public  Result trigger(String requestId) {
@@ -192,9 +193,7 @@ public class UrlTaskController {
                 scheduler.scheduleJob(job, trigger);
                 //修改对应状态
                 urlRequest.setStatus(UrlRequest.RequestStatus.START);
-                urlRequestMapper.update(urlRequest,
-                        new UpdateWrapper<UrlRequest>().eq("request_id", urlRequest.getRequestId())
-                );
+                urlRequestMapper.updateById(urlRequest);
             } catch (Exception e) {
                 e.printStackTrace();
                 return Result.error(e.getMessage());

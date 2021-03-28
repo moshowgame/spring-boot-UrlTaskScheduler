@@ -58,7 +58,7 @@ public class UrlRequestToken implements Serializable {
     /**
      * 是否启动：1启用 0禁用
      */
-    private Boolean status;
+    private Integer status;
 
     public UrlRequestToken() {
     }

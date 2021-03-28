@@ -3,7 +3,7 @@ $.jgrid.defaults.width = 1000;
 $.jgrid.defaults.responsive = true;
 $.jgrid.defaults.styleUI = 'Bootstrap4';
 
-var baseURL = "../";
+const baseURL = "../";
 
 //工具集合Tools
 window.T = {};

@@ -131,9 +131,4 @@ public class JobController {
         }
         return Result.ok();
     }
-    @PostMapping("/test")
-    public Result test(@RequestBody Map<String,Object> map){
-        log.info("RequestMap:"+ JSON.toJSONString(map));
-        return Result.ok("请求成功");
-    }
 }

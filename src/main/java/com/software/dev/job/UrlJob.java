@@ -59,11 +59,11 @@ public class UrlJob  implements Job, Serializable {
         //取得job开始时间
         //log.info("start/fire time: " + DateUtil.formatHttpDate(context.getFireTime()));
         //取得job下次触发时间
-        log.info("Next fire time :" + DateUtil.formatHttpDate(context.getNextFireTime()));
+        log.info("Next fire time: {}" , DateUtil.formatHttpDate(context.getNextFireTime()));
 
         JobDataMap dataMap =  jobDetail.getJobDataMap();
         String urlId=dataMap.getString("requestId");
-        log.info("URL REQUEST ID: " + urlId);
+        log.info("URL REQUEST ID: {}", urlId);
 
         String responseMsg=null;
         //Url Request
@@ -73,10 +73,11 @@ public class UrlJob  implements Job, Serializable {
             //成功找到请求id
             if(urlRequest!=null){
                 String requestUrl=urlRequest.getRequestUrl();
-                log.info("URL REQUEST NAME: " + urlRequest.getRequestName());
+                log.info("URL REQUEST NAME: {} ",urlRequest.getRequestName());
                 //如果存在token，
-                if(urlRequestToken!=null&&urlRequestToken.getStatus()){
+                if(urlRequestToken!=null&&urlRequestToken.getStatus()==1){
                     String tokenStr=urlPlusService.getToken(urlRequestToken);
+                    log.info("URL REQUEST TOKEN: {}",tokenStr);
                     //处理URL追加类型（优先）
                     if(UrlRequestToken.AppendType.URL.equals(urlRequestToken.getAppendType())){
                         if(requestUrl.endsWith(urlRequestToken.getAppendName()+"=")){
@@ -93,6 +94,8 @@ public class UrlJob  implements Job, Serializable {
                         //处理FORM追加类型
 
                     }
+                }else{
+                    log.info("不存在或未启用TOKEN");
                 }
 
                 log.info(urlRequest.getRequestMethod()+":" + requestUrl);

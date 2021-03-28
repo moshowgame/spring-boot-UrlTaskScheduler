@@ -38,45 +38,83 @@ const vm = new Vue({
 	el: '#rrapp',
 	data: {
 		main: "request/list",
-		menuList:[{"menuId":41,"parentId":0,"parentName":null,"name":"Request请求","url":"urlTask/list","perms":null,"type":1,"icon":"fa fa-file-code-o","orderNum":6,"open":null,"list":null},{"menuId":42,"parentId":0,"parentName":null,"name":"Token令牌","url":"urlPlus/token/list","perms":null,"type":1,"icon":"fa fa-file-code-o","orderNum":6,"open":null,"list":null},{"menuId":43,"parentId":0,"parentName":null,"name":"Log日志","url":"urlTask/log/list","perms":null,"type":1,"icon":"fa fa-file-code-o","orderNum":6,"open":null,"list":null}],
+		menuList: [{
+			"menuId": 41,
+			"parentId": 0,
+			"parentName": null,
+			"name": "Request请求",
+			"url": "request/list",
+			"perms": null,
+			"type": 1,
+			"icon": "fa fa-file-code-o",
+			"orderNum": 6,
+			"open": null,
+			"list": null
+		}, {
+			"menuId": 42,
+			"parentId": 0,
+			"parentName": null,
+			"name": "Token令牌",
+			"url": "token/list",
+			"perms": null,
+			"type": 1,
+			"icon": "fa fa-file-code-o",
+			"orderNum": 6,
+			"open": null,
+			"list": null
+		}, {
+			"menuId": 43,
+			"parentId": 0,
+			"parentName": null,
+			"name": "Log日志",
+			"url": "log/list",
+			"perms": null,
+			"type": 1,
+			"icon": "fa fa-file-code-o",
+			"orderNum": 6,
+			"open": null,
+			"list": null
+		}],
 		// menuList:{"msg":"success","menuList":[{"menuId":41,"parentId":0,"parentName":null,"name":"Request请求","url":"urlTask/list","perms":null,"type":1,"icon":"fa fa-file-code-o","orderNum":6,"open":null,"list":null},{"menuId":42,"parentId":0,"parentName":null,"name":"Token令牌","url":"urlPlus/token/list","perms":null,"type":1,"icon":"fa fa-file-code-o","orderNum":6,"open":null,"list":null},{"menuId":43,"parentId":0,"parentName":null,"name":"Log日志","url":"urlTask/log/list","perms":null,"type":1,"icon":"fa fa-file-code-o","orderNum":6,"open":null,"list":null}],"code":0},
-		navTitle:"控制台"
+		navTitle: "控制台"
 	},
 	methods: {
 		donate: function () {
+		},
+		tab: function () {
 		}
 	},
 	created: function () {
-
-	},
-	updated: function(){
-		//路由
+		//创建时初始化路由
 		const router = new Router();
-		routerList(router, vm.menuList);
+		//修复this指代问题
+		const that = this;
+		// routerList(router, this.menuList);
+		for(const key in this.menuList){
+			const menu = this.menuList[key];
+			if(menu.type === 0){
+				routerList(router, menu.list);
+			}else if(menu.type === 1){
+				router.add('#'+menu.url, function() {
+					console.log("切换路由:"+menu.url);
+					const url = window.location.hash;
+
+					//替换iframe的url
+					that.main = url.replace('#', '');
+
+					//导航菜单展开
+					$(".treeview-menu li").removeClass("active");
+					$("a[href='"+url+"']").parents("li").addClass("active");
+
+					that.navTitle = $("a[href='"+url+"']").text();
+				});
+			}else{
+				console.error("no route");
+			}
+		}
 		router.start();
+	},
+	updated: function () {
+
 	}
 });
-
-
-
-function routerList(router, menuList){
-	for(const key in menuList){
-		const menu = menuList[key];
-		if(menu.type == 0){
-			routerList(router, menu.list);
-		}else if(menu.type == 1){
-			router.add('#'+menu.url, function() {
-				const url = window.location.hash;
-
-				//替换iframe的url
-				vm.main = url.replace('#', '');
-
-				//导航菜单展开
-				$(".treeview-menu li").removeClass("active");
-				$("a[href='"+url+"']").parents("li").addClass("active");
-
-				vm.navTitle = $("a[href='"+url+"']").text();
-			});
-		}
-	}
-}

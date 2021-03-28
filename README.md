@@ -15,7 +15,23 @@ EasyUrlTask的核心是什么？
 UrlRequestPlus
 ----
 by [zhengkai.blog.csdn.net](zhengkai.blog.csdn.net) <br>
-增强版的UrlPlus部分，将会包含TokenAddition（Header Token、Form Token、Url Token）、RequestParam（FormData或JSON，GET/POST）、ResponseAssert（响应断言，根据返回结果判断是否成功，例如设置keyword="code":"00",state=1，匹配到返回对象包含keyword则代表成功，否则失败）。
+增强版的UrlPlus部分，将会包含TokenAddition（令牌设置Header Token、Form Token、Url Token）、RequestParam（请求参数，FormData或JSON，GET/POST）、ResponseAssert（响应断言，根据返回结果判断是否成功，例如设置keyword="code":"00",state=1，匹配到返回对象包含keyword则代表成功，否则失败）。
+
+TokenAddition
+----
+- Header Token,pending
+- Form Token,done
+- Url Token,done
+
+RequestParam
+----
+- GET URL,done
+- POST FROM,done
+- POST JSON,done
+
+ResponseAssert
+----
+- assert,pending
 
 
 T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
@@ -26,6 +42,10 @@ T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
 - BLOCKED：任务阻塞 
 - ERROR：任务错误
 
+URL
+----
+- 启动页面 http://localhost:6969/quartz/index
+- 测试token页面 http://localhost:6969/quartz/demo/token?username=111&password=222
 
 <img src="./image1.png">
 <img src="./image2.png">
@@ -35,6 +55,7 @@ release log
 ----
 |日期|内容|
 |----|----|
+|2021-03-28|优化以及修复请求、响应，UI优化，修复执行问题。|
 |2021-03-27|重启项目2.0版本，UI改版，UrlRequest优化。|
 |2019-04-28|UrlPlus之Url追加Token参数功能，token配置功能，优化gitignore。|
 |2019-04-11|优化管理页面，修复一些细节问题，新增日志查看功能,新增travis。|
