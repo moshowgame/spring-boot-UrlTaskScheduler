@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 28/03/2021 15:15:21
+ Date: 29/03/2021 00:23:07
 */
 
 SET NAMES utf8mb4;
@@ -67,9 +67,7 @@ CREATE TABLE `qrtz_cron_triggers`  (
 -- ----------------------------
 -- Records of qrtz_cron_triggers
 -- ----------------------------
-INSERT INTO `qrtz_cron_triggers` VALUES ('clusteredScheduler', '10001', 'DEFAULT', '0 0 0/1 * * ? *', 'Asia/Shanghai');
-INSERT INTO `qrtz_cron_triggers` VALUES ('clusteredScheduler', '10003', 'DEFAULT', '0 0/30 * * * ? *', 'Asia/Shanghai');
-INSERT INTO `qrtz_cron_triggers` VALUES ('quartzScheduler', '1375854817599098882', 'DEFAULT', '0 0/30 * * * ? *', 'Asia/Shanghai');
+INSERT INTO `qrtz_cron_triggers` VALUES ('quartzScheduler', '10005', 'DEFAULT', '0 0/30 * * * ?', 'Asia/Shanghai');
 
 -- ----------------------------
 -- Table structure for qrtz_fired_triggers
@@ -125,9 +123,7 @@ CREATE TABLE `qrtz_job_details`  (
 -- ----------------------------
 -- Records of qrtz_job_details
 -- ----------------------------
-INSERT INTO `qrtz_job_details` VALUES ('clusteredScheduler', '10001', 'DEFAULT', 'JKOrder平安好医生', 'com.software.dev.job.UrlJob', '0', '1', '0', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000174000972657175657374496474000531303030317800);
-INSERT INTO `qrtz_job_details` VALUES ('clusteredScheduler', '10003', 'DEFAULT', 'JKOrder平安好医生2.0', 'com.software.dev.job.UrlJob', '0', '1', '0', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000174000972657175657374496474000531303030337800);
-INSERT INTO `qrtz_job_details` VALUES ('quartzScheduler', '1375854817599098882', 'DEFAULT', 'DEMO REQUEST', 'com.software.dev.job.UrlJob', '0', '1', '0', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C77080000001000000001740009726571756573744964740013313337353835343831373539393039383838327800);
+INSERT INTO `qrtz_job_details` VALUES ('quartzScheduler', '10005', 'DEFAULT', 'SYNC旧浙江', 'com.software.dev.job.UrlJob', '0', '1', '0', '0', 0xACED0005737200156F72672E71756172747A2E4A6F62446174614D61709FB083E8BFA9B0CB020000787200266F72672E71756172747A2E7574696C732E537472696E674B65794469727479466C61674D61708208E8C3FBC55D280200015A0013616C6C6F77735472616E7369656E74446174617872001D6F72672E71756172747A2E7574696C732E4469727479466C61674D617013E62EAD28760ACE0200025A000564697274794C00036D617074000F4C6A6176612F7574696C2F4D61703B787001737200116A6176612E7574696C2E486173684D61700507DAC1C31660D103000246000A6C6F6164466163746F724900097468726573686F6C6478703F4000000000000C7708000000100000000174000972657175657374496474000531303030357800);
 
 -- ----------------------------
 -- Table structure for qrtz_locks
@@ -263,9 +259,22 @@ CREATE TABLE `qrtz_triggers`  (
 -- ----------------------------
 -- Records of qrtz_triggers
 -- ----------------------------
-INSERT INTO `qrtz_triggers` VALUES ('clusteredScheduler', '10001', 'DEFAULT', '10001', 'DEFAULT', NULL, 1554696000000, 1554692400000, 5, 'PAUSED', 'CRON', 1552633965000, 0, NULL, 0, '');
-INSERT INTO `qrtz_triggers` VALUES ('clusteredScheduler', '10003', 'DEFAULT', '10003', 'DEFAULT', NULL, 1554949800000, 1554948000000, 5, 'WAITING', 'CRON', 1554710451000, 0, NULL, 0, '');
-INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', '1375854817599098882', 'DEFAULT', '1375854817599098882', 'DEFAULT', NULL, 1616916600000, 1616914800000, 5, 'WAITING', 'CRON', 1616910297000, 0, NULL, 0, '');
+INSERT INTO `qrtz_triggers` VALUES ('quartzScheduler', '10005', 'DEFAULT', '10005', 'DEFAULT', NULL, 1616949000000, 1616947200000, 5, 'WAITING', 'CRON', 1616946650000, 0, NULL, 0, '');
+
+-- ----------------------------
+-- Table structure for sys_token
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_token`;
+CREATE TABLE `sys_token`  (
+  `token_id` int(11) NOT NULL AUTO_INCREMENT,
+  `token_value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`token_id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_token
+-- ----------------------------
+INSERT INTO `sys_token` VALUES (1, '85f3389e-d774-4f64-a96c-d4ba61f988b8');
 
 -- ----------------------------
 -- Table structure for url_assert
@@ -287,7 +296,7 @@ INSERT INTO `url_assert` VALUES ('10001', '[{\"keyword\":\">>>平安好医生导
 -- ----------------------------
 DROP TABLE IF EXISTS `url_request`;
 CREATE TABLE `url_request`  (
-  `request_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '请求id',
+  `request_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '请求id',
   `request_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '请求名称',
   `request_method` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '请求方法，GET/POST',
   `request_cron` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '触发时间CRON表达式',
@@ -296,14 +305,14 @@ CREATE TABLE `url_request`  (
   `request_timeout` int(11) NULL DEFAULT NULL COMMENT '超时时间ms',
   `update_time` timestamp NULL DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`request_id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = MyISAM AUTO_INCREMENT = 10006 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of url_request
 -- ----------------------------
-INSERT INTO `url_request` VALUES ('10001', 'JKOrder平安好医生xxx', 'POST', '0 0 0/1 * * ? *', 'http://localhost:6767/newJkOrder', 0, 6000, NULL);
-INSERT INTO `url_request` VALUES ('10003', 'JKOrder平安好医生2.0', 'POST', '0 0/30 * * * ? *', 'http://localhost:6767/jkOrder2', 0, 6000, '2021-03-28 01:37:29');
-INSERT INTO `url_request` VALUES ('1375854817599098882', 'DEMO REQUEST', 'POST', '0 0/30 * * * ? *', 'http://localhost:6969/quartz/demo/request', 1, NULL, '2021-03-28 13:44:36');
+INSERT INTO `url_request` VALUES (10001, 'JKOrder平安好医生xxx', 'POST', '0 0 0/1 * * ? *', 'http://localhost:6767/newJkOrder', 0, 6000, NULL);
+INSERT INTO `url_request` VALUES (10003, 'JKOrder平安好医生2.0', 'POST', '0 0/30 * * * ? *', 'http://localhost:6767/jkOrder2', 0, 6000, '2021-03-28 01:37:29');
+INSERT INTO `url_request` VALUES (10004, 'DEMO REQUEST', 'POST', '0 0/30 * * * ? *', 'http://localhost:6969/quartz/demo/request', 0, NULL, '2021-03-28 13:44:36');
 
 -- ----------------------------
 -- Table structure for url_request_token
@@ -325,33 +334,24 @@ CREATE TABLE `url_request_token`  (
 -- ----------------------------
 -- Records of url_request_token
 -- ----------------------------
-INSERT INTO `url_request_token` VALUES ('1375854817599098882', 'http://localhost:6969/quartz/demo/token', 'GET', '{\"username\":\"123456\",\"password\":\"456789\"}', 'JSON', 'token', 'URL', 1, 'msg.token');
+INSERT INTO `url_request_token` VALUES ('10004', 'http://localhost:6969/quartz/demo/token', 'GET', '{\"username\":\"123456\",\"password\":\"456789\"}', 'JSON', 'token', 'URL', 1, 'msg.token');
 
 -- ----------------------------
 -- Table structure for url_response
 -- ----------------------------
 DROP TABLE IF EXISTS `url_response`;
 CREATE TABLE `url_response`  (
-  `response_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '响应id',
+  `response_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '响应id',
   `request_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '请求id',
   `response_time` datetime NULL DEFAULT NULL COMMENT '应答时间',
   `response_text` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '响应内容',
   `state` tinyint(1) NULL DEFAULT NULL COMMENT '状态：0失败 1成功 9无响应',
   PRIMARY KEY (`response_id`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = MyISAM AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of url_response
 -- ----------------------------
-INSERT INTO `url_response` VALUES ('bd0832c3-7d5f-4748-9481-4622e0b678a9', '1375854817599098882', '2021-03-28 13:45:17', '{\"msg\":\"请求失败，TOKEN不正确\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('f6550ecc-8050-4e83-8bc1-d5bab5e5a8e4', '1375854817599098882', '2021-03-28 13:48:14', '{\"msg\":\"请求失败，TOKEN不正确：null\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('f0d32c57-a697-4e8a-a5fe-54f7de3172c7', '1375854817599098882', '2021-03-28 13:59:35', '{\"msg\":\"请求失败，TOKEN不正确：null\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('209555a6-0eb0-46a9-87d7-4460bf3994b8', '1375854817599098882', '2021-03-28 14:00:00', '{\"msg\":\"请求失败，TOKEN不正确：null\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('177d6528-570d-4941-9b7d-76e67d2dce06', '1375854817599098882', '2021-03-28 14:02:06', '{\"msg\":\"请求失败，TOKEN不正确：null\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('76c41fd4-3479-4dbc-ae9c-76b360e58f63', '1375854817599098882', '2021-03-28 14:02:34', '{\"msg\":\"请求失败，TOKEN不正确：null\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('72d60dd5-fe8c-445a-8524-c4f02191b7a4', '1375854817599098882', '2021-03-28 14:06:35', '{\"msg\":\"请求失败，TOKEN不正确：null\",\"code\":500}', NULL);
-INSERT INTO `url_response` VALUES ('8074f72b-7a4b-499b-aeae-44008dccc572', '1375854817599098882', '2021-03-28 14:07:35', '{\"msg\":\"请求成功，TOKEN有效\",\"code\":0}', NULL);
-INSERT INTO `url_response` VALUES ('f8e71a1c-352d-491d-909d-1f5987ae9bf6', '1375854817599098882', '2021-03-28 14:30:00', '{\"msg\":\"请求成功，TOKEN有效\",\"code\":0}', NULL);
-INSERT INTO `url_response` VALUES ('79178914-7651-4231-93e6-8194eb9cec56', '1375854817599098882', '2021-03-28 15:00:00', '{\"msg\":\"请求成功，TOKEN有效\",\"code\":0}', NULL);
+INSERT INTO `url_response` VALUES (1, '10005', '2021-03-28 23:54:40', '{\"code\":200,\"msg\":\"操作成功\",\"data\":null,\"count\":0}', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

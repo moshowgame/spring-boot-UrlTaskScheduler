@@ -44,6 +44,7 @@ T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
 
 URL
 ----
+- 登录页面 http://localhost:6969/quartz/login (token:85f3389e-d774-4f64-a96c-d4ba61f988b8)
 - 启动页面 http://localhost:6969/quartz/index
 - 测试token页面 http://localhost:6969/quartz/demo/token?username=111&password=222
 
@@ -55,7 +56,8 @@ release log
 ----
 |日期|内容|
 |----|----|
-|2021-03-28|优化以及修复请求、响应，UI优化，修复执行问题。|
+|更新预告|token与request绑定分离，支持同一系统多API的情况。|
+|2021-03-28|优化以及修复请求、响应，UI优化，修复执行问题。新增登录功能。|
 |2021-03-27|重启项目2.0版本，UI改版，UrlRequest优化。|
 |2019-04-28|UrlPlus之Url追加Token参数功能，token配置功能，优化gitignore。|
 |2019-04-11|优化管理页面，修复一些细节问题，新增日志查看功能,新增travis。|

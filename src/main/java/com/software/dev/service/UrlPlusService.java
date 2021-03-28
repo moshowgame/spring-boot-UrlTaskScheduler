@@ -44,7 +44,7 @@ public class UrlPlusService  implements Serializable {
             }
         }
         JSONObject tokenObject = JSONObject.parseObject(responseMsg);
-
+        log.info("response:{}",responseMsg);
         String token=null;
         //未定义获取Token表达
         if(StringUtils.isEmpty(urlRequestToken.getTokenExpression())){

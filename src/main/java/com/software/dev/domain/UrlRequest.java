@@ -20,8 +20,8 @@ public class UrlRequest implements Serializable {
     /**
      * 请求id
      */
-    @TableId(type = IdType.ID_WORKER_STR)
-    private String requestId;
+    @TableId(type = IdType.AUTO)
+    private Integer requestId;
 
     /**
      * 请求名称

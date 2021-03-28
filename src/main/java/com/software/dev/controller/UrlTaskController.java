@@ -1,12 +1,10 @@
 package com.software.dev.controller;
 
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Console;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dev.domain.*;
 import com.software.dev.job.UrlJob;
@@ -18,7 +16,6 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +167,7 @@ public class UrlTaskController {
         if(urlRequest!=null){
             try {
                 log.info("确认是否有旧任务，删除重新添加");
-                JobKey key = new JobKey(urlRequest.getRequestId(), UrlJob.DEFAULT_GROUP);
+                JobKey key = new JobKey(urlRequest.getRequestId().toString(), UrlJob.DEFAULT_GROUP);
                 if(scheduler.checkExists(key)){
                     //如果存在旧的，删除重新添加
                     scheduler.deleteJob(key);
@@ -178,7 +175,7 @@ public class UrlTaskController {
                 Class cls = Class.forName(UrlJob.class.getName()) ;
                 cls.newInstance();
                 //构建job信息
-                JobDetail job = JobBuilder.newJob(cls).withIdentity(urlRequest.getRequestId(),
+                JobDetail job = JobBuilder.newJob(cls).withIdentity(urlRequest.getRequestId().toString(),
                         UrlJob.DEFAULT_GROUP)
                         .withDescription(urlRequest.getRequestName()).build();
 
@@ -187,7 +184,7 @@ public class UrlTaskController {
                 log.info("开始触发新任务");
                 // 触发时间点
                 CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(urlRequest.getRequestCron());
-                Trigger trigger = TriggerBuilder.newTrigger().withIdentity(urlRequest.getRequestId(),UrlJob.DEFAULT_GROUP)
+                Trigger trigger = TriggerBuilder.newTrigger().withIdentity(urlRequest.getRequestId().toString(),UrlJob.DEFAULT_GROUP)
                         .startNow().withSchedule(cronScheduleBuilder).build();
                 //交由Scheduler安排触发
                 scheduler.scheduleJob(job, trigger);

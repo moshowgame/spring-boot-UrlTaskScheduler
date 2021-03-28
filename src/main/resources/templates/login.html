@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>数字政府供应商资源池案例信息征集系统</title>
+  <title>Easy Url Task</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="${request.contextPath}/statics/css/bootstrap.min.css">
@@ -27,9 +27,8 @@
   </div>
   <!-- /.login-logo -->
     <div class="login-box-body" v-show="agree===false">
-        <p class="login-box-msg" style="font-weight: bold">广东省电子政务协会<br>
-            ADMIN</p>
-        <p><br><br></p>
+        <p class="login-box-msg" style="font-weight: bold">by zhengkai.blog.csdn.net<br>
+            Open Source Project</p>
       <p>人生得意须尽欢，莫使金樽空对月。</p>
       <p>天生我材必有用，千金散尽还复来。</p>
         <button type="button" class="btn btn-primary btn-block btn-flat" @click="agreeIt">确认</button>
@@ -40,27 +39,18 @@
         <h4 style="margin-bottom: 0px;"><i class="fa fa-exclamation-triangle"></i> {{errorMsg}}</h4>
       </div>
       <div class="form-group has-feedback">
-        <input type="text" class="form-control" v-model="username" placeholder="账号">
+        <input type="text" class="form-control" v-model="token" placeholder="TOKEN">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" v-model="password" placeholder="密码">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
         <input type="text" class="form-control" v-model="captcha" @keyup.enter="login" placeholder="验证码">
         <span class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
       </div>
-      <div class="form-group has-feedback">
-        <img alt="如果看不清楚，请单击图片刷新！" class="pointer" :src="src" @click="refreshCode">
-        &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="refreshCode">点击刷新</a>
-      </div>
-      
-      
+
       <div class="row">
-        <div class="col-xs-8">
+        <!--<div class="col-xs-8">
             <button type="button" class="btn btn-block btn-flat" @click="register">还没企业账号，注册一个？</button>
-        </div>
+        </div>-->
         <!-- /.col -->
         <div class="col-xs-4">
             <button type="button" class="btn btn-primary btn-block btn-flat" @click="login">登录</button>
@@ -83,13 +73,12 @@
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
-		username: '',
-		password: '',
-		captcha: '',
+		token: '',
+		captcha: '1234',
 		error: false,
 		errorMsg: '',
 		src: 'captcha.jpg',
-        agree:false
+        agree:true
 	},
 	beforeCreate: function(){
 		if(self != top){
@@ -104,33 +93,31 @@ var vm = new Vue({
             this.agree=true;
         },
 		login: function (event) {
-          const data = "username=" + vm.username + "&password=" + vm.password + "&captcha=" + vm.captcha;
-          if(vm.username.length<2||vm.password.length<2||vm.captcha.length<2){
+          const data = "token=" + vm.token.trim() + "&captcha=" + vm.captcha;
+          if(vm.token.length<10||vm.captcha.length<4){
                 vm.error = true;
-                vm.errorMsg = "请完整填写账号/密码/验证码再登录";
+                vm.errorMsg = "请输入超过十位的合法TOKEN和大于四位的验证码";
                 return;
             }
 			$.ajax({
 				type: "POST",
-			    url: "sys/login",
+			    url: "login",
 			    data: data,
 			    dataType: "json",
-			    success: function(result){
-					if(result.code == 0){//登录成功
-						parent.location.href ='index.html';
+			    success: function(r){
+					if(r.code === 0){//登录成功
+						parent.location.href ='index';
 					}else{
 						vm.error = true;
-						vm.errorMsg = result.msg;
-						
-						vm.refreshCode();
+						vm.errorMsg = r.msg;
 					}
 				}
 			});
-		},
+		}/*,
         register: function (event) {
           const data = "username=" + vm.username + "&password=" + vm.password + "&captcha=" + vm.captcha;
           location.href ='register.html';
-        }
+        }*/
 	}
 });
 </script>
