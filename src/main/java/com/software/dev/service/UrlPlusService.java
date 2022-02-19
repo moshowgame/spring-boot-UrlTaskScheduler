@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.software.dev.domain.UrlRequestToken;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class UrlPlusService  implements Serializable {
         log.info("response:{}",responseMsg);
         String token=null;
         //未定义获取Token表达
-        if(StringUtils.isEmpty(urlRequestToken.getTokenExpression())){
+        if(StringUtils.isBlank(urlRequestToken.getTokenExpression())){
             for(String key:tokenObject.keySet()){
                 //如果包含token，则直接找到，返回即可
                 if(key.equalsIgnoreCase("token")){

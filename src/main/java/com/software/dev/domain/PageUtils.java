@@ -42,7 +42,13 @@ public class PageUtils implements Serializable {
         this.currPage = currPage;
         this.totalPage = (int)Math.ceil((double)totalCount/pageSize);
     }
-
+    public PageUtils(List<?> list, long totalCount, int pageSize, int currPage) {
+        this.list = list;
+        this.totalCount = Math.toIntExact(totalCount);
+        this.pageSize = pageSize;
+        this.currPage = currPage;
+        this.totalPage = (int)Math.ceil((double)totalCount/pageSize);
+    }
     /**
      * 分页
      */

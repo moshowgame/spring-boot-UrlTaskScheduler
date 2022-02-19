@@ -46,8 +46,8 @@ public class UrlTaskController {
     public Result requestList(PageParam param){
         log.info("请求列表{}",JSON.toJSONString(param));
         //手动分页
-        List data= urlRequestMapper.listUrl((param.getPage()-1)*param.getLimit(),param.getLimit(),(StringUtils.isEmpty(param.getSearch()))?null:param.getSearch());
-        Integer total=urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
+        List<UrlRequest> data= urlRequestMapper.listUrl((param.getPage()-1)*param.getLimit(),param.getLimit(),(StringUtils.isEmpty(param.getSearch()))?null:param.getSearch());
+        Long total= urlRequestMapper.selectCount(new QueryWrapper<UrlRequest>());
 //        log.info(JSON.toJSONString(data));
         PageUtils page = new PageUtils(data,total,param.getLimit(),param.getPage());
 

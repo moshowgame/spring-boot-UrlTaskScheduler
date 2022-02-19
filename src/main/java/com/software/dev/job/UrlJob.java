@@ -3,7 +3,6 @@ package com.software.dev.job;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.software.dev.domain.UrlRequest;
 import com.software.dev.domain.UrlRequestToken;
@@ -13,10 +12,10 @@ import com.software.dev.mapper.UrlRequestTokenMapper;
 import com.software.dev.mapper.UrlResponseMapper;
 import com.software.dev.service.UrlPlusService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -67,7 +66,7 @@ public class UrlJob  implements Job, Serializable {
 
         String responseMsg=null;
         //Url Request
-        if(!StringUtils.isEmpty(urlId)){
+        if(!StringUtils.isBlank(urlId)){
             UrlRequest urlRequest=urlRequestMapper.selectOne(new QueryWrapper<UrlRequest>().eq("request_id",urlId));
             UrlRequestToken urlRequestToken=urlRequestTokenMapper.selectById(urlId);
             //成功找到请求id
