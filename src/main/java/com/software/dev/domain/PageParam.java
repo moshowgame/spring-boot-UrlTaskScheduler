@@ -15,5 +15,6 @@ public class PageParam implements Serializable {
     String order;
     String search;
     String id;
+    String requestId;
 
 }

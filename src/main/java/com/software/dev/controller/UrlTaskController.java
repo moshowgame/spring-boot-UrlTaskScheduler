@@ -16,6 +16,7 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class UrlTaskController {
         return Result.ok().put("data",urlRequestMapper.selectById(param.getId()));
     }
     @PostMapping("/request/list")
-    public Result requestList(PageParam param){
+    public Result requestList(@RequestBody PageParam param){
         log.info("请求列表{}",JSON.toJSONString(param));
         //手动分页
         List<UrlRequest> data= urlRequestMapper.listUrl((param.getPage()-1)*param.getLimit(),param.getLimit(),(StringUtils.isEmpty(param.getSearch()))?null:param.getSearch());
@@ -53,19 +54,23 @@ public class UrlTaskController {
 
         return Result.ok().put("page", page);
     }
-
+    @PostMapping("/request/list2")
+    public Result requestList2(){
+        List<UrlRequest> data= urlRequestMapper.selectList(new QueryWrapper<UrlRequest>().select("request_id","request_name").orderByAsc("request_id"));
+        return Result.ok().put("data", data);
+    }
     @PostMapping("/response/list")
-    public Result responseList(PageParam param){
+    public Result responseList(@RequestBody PageParam param){
         log.info("响应列表{}",JSON.toJSONString(param));
         //自带分页
         IPage<UrlResponse> iPage= urlResponseMapper.selectPage(new Page<UrlResponse>(param.getPage(),param.getLimit()),
-                new QueryWrapper<UrlResponse>().eq("request_id",param.getId()).like(StringUtils.isNotEmpty(param.getSearch()),"response_text",param.getSearch()).orderByDesc("response_time")
+                new QueryWrapper<UrlResponse>().eq("request_id",param.getRequestId()).like(StringUtils.isNotBlank(param.getSearch()),"response_text",param.getSearch()).orderByDesc("response_time")
         );
         PageUtils page = new PageUtils(iPage.getRecords(), (int) iPage.getTotal(),param.getLimit(),param.getPage());
 
         return Result.ok().put("page", page);
     }
-    @PostMapping("/trigger")
+    @PostMapping("/request/trigger")
     public  Result trigger(String requestId) {
         log.info("触发任务:"+requestId);
         try {
@@ -77,7 +82,7 @@ public class UrlTaskController {
         }
         return Result.ok();
     }
-    @PostMapping("/pause")
+    @PostMapping("/request/pause")
     public  Result pause(String requestId) {
         log.info("暂停任务:"+requestId);
         try {
@@ -98,7 +103,7 @@ public class UrlTaskController {
         return Result.ok();
     }
     @Deprecated
-    @PostMapping("/resume")
+    @PostMapping("/request/resume")
     public  Result resume(String requestId) {
         log.info("恢复任务:"+ requestId);
         try {
@@ -148,19 +153,19 @@ public class UrlTaskController {
         log.info("RequestMap:"+ JSON.toJSONString(map));
         return Result.ok("请求成功");
     }
-    @PostMapping("/delete")
-    public  Result delete(@RequestBody PageParam param) {
-        log.info("移除任务:"+param.getId());
-        if(param.getId()!=null&&urlRequestMapper.selectById(param.getId())!=null){
+    @PostMapping("/request/delete")
+    public  Result delete(String requestId) {
+        log.info("移除任务:"+requestId);
+        if(requestId!=null&&urlRequestMapper.selectById(requestId)!=null){
             //先移除任务
-            remove(param.getId());
-            urlRequestMapper.deleteById(param.getId());
+            remove(requestId);
+            urlRequestMapper.deleteById(requestId);
             return Result.ok("删除成功");
         }else{
             return Result.error("记录不存在");
         }
     }
-    @PostMapping("/start")
+    @PostMapping("/request/start")
     public Result start(String requestId){
         log.info("启动任务:"+requestId);
         UrlRequest urlRequest=urlRequestMapper.selectOne(new QueryWrapper<UrlRequest>().eq("request_id",requestId));

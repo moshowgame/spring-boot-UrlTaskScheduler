@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +31,13 @@ public class UrlResponse implements Serializable {
     /**
      * 应答时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date responseTime;
+    /**
+     * 请求时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    private Date requestTime;
 
     /**
      * 响应内容
@@ -40,7 +47,11 @@ public class UrlResponse implements Serializable {
     /**
      * 状态：0失败 1成功 9无响应
      */
-    private Integer state;
+    private Integer status;
+    /**
+     * 推断结果
+     */
+    private String assumptionResult;
 
     public UrlResponse() {
     }

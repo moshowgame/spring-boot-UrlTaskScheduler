@@ -1,7 +1,7 @@
 
 # Created by https://www.gitignore.io/api/java,maven,eclipse,java-web,intellij+all
 # Edit at https://www.gitignore.io/?templates=java,maven,eclipse,java-web,intellij+all
-
+ui/node_modules/
 ### Eclipse ###
 .metadata
 bin/
