@@ -43,10 +43,10 @@
 		</dependency>
 	  <!-- 模版 -->
 	  <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-freemarker -->
-	  <dependency>
+	  <!--<dependency>
 		  <groupId>org.springframework.boot</groupId>
 		  <artifactId>spring-boot-starter-freemarker</artifactId>
-	  </dependency>
+	  </dependency>-->
 
 	  <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
 		<!--<dependency>

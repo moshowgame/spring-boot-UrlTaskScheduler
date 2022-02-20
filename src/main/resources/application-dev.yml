@@ -21,20 +21,20 @@ spring:
         charset: UTF-8
     application:
         name: spring-boot-EasyUrlTask
-    freemarker:
-        request-context-attribute: request
-        suffix: .html
-        content-type: text/html
-        enabled: true
-        cache: false
-        charset: UTF-8
-        allow-request-override: false
-        expose-request-attributes: true
-        expose-session-attributes: true
-        expose-spring-macro-helpers: true
-        settings:
-          number_format: 0.##
-          default_encoding: UTF-8
+#    freemarker:
+#        request-context-attribute: request
+#        suffix: .html
+#        content-type: text/html
+#        enabled: true
+#        cache: false
+#        charset: UTF-8
+#        allow-request-override: false
+#        expose-request-attributes: true
+#        expose-session-attributes: true
+#        expose-spring-macro-helpers: true
+#        settings:
+#          number_format: 0.##
+#          default_encoding: UTF-8
 #          template_loader: /templates/
 #    mvc:
 #      static-path-pattern: /statics/**
