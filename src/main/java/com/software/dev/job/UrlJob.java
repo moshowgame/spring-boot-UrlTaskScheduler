@@ -96,25 +96,31 @@ public class UrlJob  implements Job, Serializable {
                 }else{
                     log.info("不存在或未启用TOKEN");
                 }
-
-                log.info(urlRequest.getRequestMethod()+":" + requestUrl);
-                //if()
-                //请求GET/POST
-                if(UrlRequest.RequestMethod.GET.equals(urlRequest.getRequestMethod())){
-                    responseMsg = HttpUtil.get(requestUrl);
-                }else if (UrlRequest.RequestMethod.POST.equals(urlRequest.getRequestMethod())){
-                    responseMsg = HttpUtil.post(requestUrl,"");
-                }
-                log.info("RESPONSE TEXT:"+responseMsg);
-
                 //处理响应
                 UrlResponse urlResponse=new UrlResponse();
                 urlResponse.setRequestId(urlId);
+                urlResponse.setRequestTime(new Date());
+                log.info(urlRequest.getRequestMethod()+":" + requestUrl);
+                //if()
+                //请求GET/POST
+                try{
+                    if(UrlRequest.RequestMethod.GET.equals(urlRequest.getRequestMethod())){
+                        responseMsg = HttpUtil.get(requestUrl);
+                    }else if (UrlRequest.RequestMethod.POST.equals(urlRequest.getRequestMethod())){
+                        responseMsg = HttpUtil.post(requestUrl,"");
+                    }
+                    urlResponse.setStatus(1);
+                    urlResponse.setResponseText(responseMsg);
+                    //TODO 推断逻辑 assumption
+                }catch(Exception e){
+                    //优化异常提示
+                    urlResponse.setStatus(9);
+                    urlResponse.setResponseText(e.getMessage());
+                }
+                log.info("RESPONSE TEXT:"+responseMsg);
                 urlResponse.setResponseId(IdUtil.fastUUID());
                 urlResponse.setResponseTime(new Date());
-                urlResponse.setResponseText(responseMsg);
                 urlResponseMapper.insert(urlResponse);
-
             }
         }
 

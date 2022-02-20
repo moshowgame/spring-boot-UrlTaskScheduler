@@ -19,14 +19,15 @@ public class UserLoginInterceptor implements HandlerInterceptor {
                              Object handler)throws Exception {
         HttpSession session = request.getSession(true);
         Object token = session.getAttribute("token");
-        if(null!=token) {
+        /*if(null!=token) {
             //已登录
             return true;
         }else {//未登录
             //直接重定向到登录页面
             response.sendRedirect(request.getContextPath()+"/login");
             return false;
-        }
+        }*/
+        return true;
     }
 
 }
