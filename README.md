@@ -37,6 +37,13 @@ ResponseAssumption
 ----
 - PENDING
 
+one-step-admin 前端使用说明
+----
+[推荐使用pnpm](https://blog.csdn.net/moshowgame/article/details/122020979)
+>npx pnpm add -g pnpm
+pnpm install
+pnpm dev
+pnpm build:test
 
 T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
 ----
