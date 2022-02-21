@@ -39,9 +39,9 @@ public class UrlTaskController {
     @Autowired
     private UrlResponseMapper urlResponseMapper;
 
-    @GetMapping("/info")
-    public Result info(PageParam param){
-        return Result.ok().put("data",urlRequestMapper.selectById(param.getId()));
+    @PostMapping("/request/info")
+    public Result info(@RequestBody PageParam param){
+        return Result.ok().put("data",urlRequestMapper.selectById(param.getRequestId()));
     }
     @PostMapping("/request/list")
     public Result requestList(@RequestBody PageParam param){
@@ -212,7 +212,7 @@ public class UrlTaskController {
         }
         return Result.ok();
     }
-    @PostMapping("/save")
+    @PostMapping("/request/save")
     public  Result save(@RequestBody UrlRequest urlRequest) {
         Console.log(JSON.toJSONString(urlRequest));
         if(StringUtils.isAnyEmpty(urlRequest.getRequestName(),urlRequest.getRequestCron(),urlRequest.getRequestUrl())){

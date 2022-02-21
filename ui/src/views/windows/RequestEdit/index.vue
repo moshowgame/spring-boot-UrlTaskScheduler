@@ -1,51 +1,32 @@
 <template>
     <div>
-        <page-header title="基础表单" content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。表单域标签也可支持响应式。" />
+        <page-header title="编辑请求" content="CRON表达式例子，【0 0/15 * * * ? *】十五分钟一次，【0 0 0/6 * * ? *】六小时一次。" />
         <page-main>
             <el-row type="flex" justify="center">
                 <el-col :md="12" :sm="18">
                     <el-form :model="form" label-width="80px">
-                        <el-form-item label="活动名称">
-                            <el-input v-model="form.name" />
+                        <el-form-item label="请求ID">
+                            <el-input v-model="params.requestId" />
                         </el-form-item>
-                        <el-form-item label="活动区域">
-                            <el-select v-model="form.region" placeholder="请选择活动区域">
-                                <el-option label="区域一" value="shanghai" />
-                                <el-option label="区域二" value="beijing" />
+                        <el-form-item label="请求名称">
+                            <el-input v-model="form.requestName" />
+                        </el-form-item>
+                        <el-form-item label="请求属性">
+                            <el-select v-model="form.requestMethod" placeholder="请选择method get or post">
+                                <el-option label="GET" value="GET" />
+                                <el-option label="POST" value="POST" />
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="活动时间">
-                            <el-col :span="11">
-                                <el-date-picker v-model="form.date1" type="date" placeholder="选择日期" style="width: 100%;" />
-                            </el-col>
-                            <el-col class="line" :span="2">-</el-col>
-                            <el-col :span="11">
-                                <el-time-picker v-model="form.date2" placeholder="选择时间" style="width: 100%;" />
-                            </el-col>
+                        <el-form-item label="请求URL">
+                            <el-input v-model="form.requestUrl" type="textarea" />
                         </el-form-item>
-                        <el-form-item label="即时配送">
-                            <el-switch v-model="form.delivery" />
-                        </el-form-item>
-                        <el-form-item label="活动性质">
-                            <el-checkbox-group v-model="form.type">
-                                <el-checkbox label="美食/餐厅线上活动" name="type" />
-                                <el-checkbox label="地推活动" name="type" />
-                                <el-checkbox label="线下主题活动" name="type" />
-                                <el-checkbox label="单纯品牌曝光" name="type" />
-                            </el-checkbox-group>
-                        </el-form-item>
-                        <el-form-item label="特殊资源">
-                            <el-radio-group v-model="form.resource">
-                                <el-radio label="线上品牌商赞助" />
-                                <el-radio label="线下场地免费" />
-                            </el-radio-group>
-                        </el-form-item>
-                        <el-form-item label="活动形式">
-                            <el-input v-model="form.desc" type="textarea" />
+                        <el-form-item label="CRON表达式">
+                            <el-input v-model="form.requestCron" type="textarea" />
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary">立即创建</el-button>
-                            <el-button>取消</el-button>
+<!--                            <el-button type="primary" @click="getData">获取</el-button>-->
+                            <el-button type="primary" @click="onSave">保存</el-button>
+                            <el-button @click="onClose">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -54,21 +35,73 @@
     </div>
 </template>
 
+<script setup>
+defineProps({
+    params: {
+        type: Object
+    }
+})
+</script>
+
 <script>
 export default {
     data() {
         return {
             form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
+                requestName: '',
+                requestId: '',
+                requestUrl: '',
+                requestCron: '',
+                requestMethod: 'POST'
             }
         }
+    },
+    methods: {
+          onSave() {
+              //validation
+              if(this.form.requestName.length<6||this.form.requestUrl.length<6||this.form.requestId.length<6||this.form.requestCron.length<6){
+                  this.$message.error({
+                      message: '请完整填写所需信息！',
+                      center: true
+                  })
+                  return;
+              }
+              //save request
+              this.$api.post('urlTask/request/save', this.form).then(res=>{
+                  // 后续业务代码
+                  console.log(res)
+                  if(res.code === 0 || res.code === 200 ) {
+                      this.$message.success({
+                          message: res.msg,
+                          center: true
+                      })
+                  }else{
+                      this.$message.error({
+                          message: res.msg,
+                          center: true
+                      })
+                  }
+
+              })
+          },
+            onClose(){
+                this.$window.remove("RequestEdit")
+            },
+          getData() {
+              if(this.params.requestId !== ''){
+                  this.form.requestId = this.params.requestId
+                  this.$api.post('urlTask/request/info', this.form).then(res=>{
+                      // 后续业务代码
+                      // console.log(res)
+                      this.form = res.data
+                  })
+              }
+        }
+    },
+    mounted() {
+        this.getData()
+        // console.log(props.params.requestId)
+        // this.data().form.requestId = props.params.requestId
     }
 }
 </script>

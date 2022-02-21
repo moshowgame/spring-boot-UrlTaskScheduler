@@ -28,6 +28,11 @@
                     </el-form-item>
                 </el-form>
             </search-bar>
+            <el-pagination v-model:current-page="page.currentPage" layout="total, sizes, prev, pager, next, jumper" class="pagination"
+                           :page-size="page.pageSize" :page-sizes="[5,20,50,100]" :total="page.total" :pager-count="5" background
+                           @size-change="getDataList"
+                           @current-change="getDataList"
+            />
             <el-table ref="table" class="list-table" :data="dataList" border stripe highlight-current-row>
                 <el-table-column prop="responseId" label="请求ID" />
                 <el-table-column prop="requestId" label="请求名称" />
@@ -44,38 +49,12 @@
                 </el-table-column>
                 <el-table-column prop="assumptionResult" label="推断结果" />
             </el-table>
-            <el-pagination :current-page="page" :total="100" :page-size="10" :page-sizes="[10, 50, 100]" layout="total, sizes, ->, prev, pager, next, jumper" :hide-on-single-page="false" class="pagination" background />
         </page-main>
     </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            // 搜索
-            search: {
-                requestName: '',
-                requestId: '',
-                responseIdOptions: [{requestId:10004,requestName:'请求'}],
-            },
-            // 列表数据
-            dataList: [{
-                "requestId": 99999,
-                "requestName": "DEMO REQUEST",
-                "requestCron": "0 0/30 * * * ? *",
-                "requestUrl": "http://localhost:6969/quartz/demo/request",
-                "requestMethod": "POST",
-                "status": 0,
-                "requestTimeout": null,
-                "updateTime": "2020-10-01 23:30:00",
-                "triggerState": null,
-                "nextFireTime": null
-            }],
-            page: 3
-
-        }
-    },
     methods: {
         getRequestDropdown() {
             const that = this;
@@ -95,15 +74,26 @@ export default {
                 center: true
             })
             this.$api.post('urlTask/response/list', {
-                page: 1,
-                limit: 10,
+                page: this.page.currentPage,
+                limit: this.page.pageSize,
                 requestId: that.search.requestId,
                 search: that.search.responseText
             }).then(res=>{
                 // 后续业务代码
                 console.log(res)
                 that.dataList = res.page.list
+                that.page.total = res.page.totalCount
             })
+        },
+        handleSizeChange(val){
+            console.log(`${val} items per page`)
+            this.page.pageSize = val
+            this.getDataList()
+        },
+        handleCurrentChange(val){
+            console.log(`current page: ${val}`)
+            this.page.currentPage = val
+            this.getDataList()
         },
         onCreate() {
             this.$message.success({
@@ -177,6 +167,35 @@ export default {
             const s = (date.getSeconds() <10?'0'+date.getSeconds() :date.getSeconds() );
 
             return date;
+        }
+    },
+    data() {
+        return {
+            // 搜索
+            search: {
+                requestName: '',
+                requestId: '',
+                responseIdOptions: [{requestId:10004,requestName:'请求'}],
+            },
+            // 列表数据
+            dataList: [{
+                "requestId": 99999,
+                "requestName": "DEMO REQUEST",
+                "requestCron": "0 0/30 * * * ? *",
+                "requestUrl": "http://localhost:6969/quartz/demo/request",
+                "requestMethod": "POST",
+                "status": 0,
+                "requestTimeout": null,
+                "updateTime": "2020-10-01 23:30:00",
+                "triggerState": null,
+                "nextFireTime": null
+            }],
+            page: {
+                currentPage:1,
+                pageSize:5,
+                total:100
+            }
+
         }
     },
     mounted() {

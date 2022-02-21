@@ -7,16 +7,12 @@ export default {
             windowName: 'RequestList'
         },
         {
-            title: '响应处理',
+            title: '响应日志',
             windowName: 'ResponseList'
         },
         {
             title: '令牌设置',
             windowName: 'TokenList'
-        },
-        {
-            title: '日志列表',
-            windowName: 'LogList'
         }
     ]
 }

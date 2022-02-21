@@ -2,7 +2,7 @@
     <div>
         <page-header title="什么是Request Task？" content="这是最重要的部分，一个任务从请求开始，在这里定义你的请求详情吧（例如请求什么url，定时的方式是什么）。" />
         <page-main>
-            <el-button type="primary" icon="el-icon-plus">新增</el-button>
+            <el-button type="primary" icon="el-icon-plus" @click="onCreate">新增</el-button>
             <search-bar>
                 <el-form :model="search" size="small" label-width="100px" label-suffix="：">
                     <el-row>
@@ -86,7 +86,7 @@ export default {
         getDataList() {
             const that = this;
             this.$message.success({
-                message: '你点击了筛选',
+                message: '加载数据中',
                 center: true
             })
             this.$api.post('urlTask/request/list', {
@@ -104,12 +104,16 @@ export default {
                 message: '你点击了新增',
                 center: true
             })
+            //打开编辑窗口
+            this.$window.add({title: '新增请求', name: 'RequestEdit', params: {'requestId': ''}});
         },
         onEdit(row) {
             this.$message.success({
                 message: `你点击了编辑,「${row.requestId} - ${row.requestName}」`,
                 center: true
             })
+            //打开编辑窗口
+            this.$window.add({title: '编辑请求', name: 'RequestEdit', params: {'requestId': row.requestId}});
         },
         start(row) {
             this.$message.success({
@@ -172,7 +176,11 @@ export default {
 
             return date;
         }
-    }
+    },
+    mounted() {
+        console.log('mounted')
+        this.getDataList();
+    },
 }
 </script>
 
