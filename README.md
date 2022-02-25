@@ -17,7 +17,7 @@ SchedulerPlus
 ----
 by [zhengkai.blog.csdn.net](zhengkai.blog.csdn.net) <br>
 增强版的SchedulerPlus部分,包含:
-- TokenAddition（令牌设置Header Token、Form Token、Url Token）
+- RequestToken（令牌设置Header Token、Form Token、Url Token）
 - RequestParam（请求参数,追加FormData或JSON等参数和报文,设置GET/POST属性）
 - ResponseAssumption（响应断言,根据返回结果判断是否成功,例如设置keyword="code":"00",state=1,匹配到返回对象包含keyword则代表成功,否则失败）.
 
@@ -35,40 +35,49 @@ RequestParam
 
 ResponseAssumption
 ----
-- PENDING
-
-one-step-admin 前端使用说明
-----
-[推荐使用pnpm](https://blog.csdn.net/moshowgame/article/details/122020979)
->npx pnpm add -g pnpm
-pnpm install
-pnpm dev
-pnpm build:test
+- Page Done , Function TBC
 
 T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
 ----
 - WAITING:等待执行中
 - PAUSED:任务暂停
 - ACQUIRED:正在执行中
+- COMPLETE:正在执行中
 - BLOCKED：任务阻塞 
 - ERROR：任务错误
 
+<img src="./quartz-status.png">
+
+
+one-step-admin 前端使用说明
+----
+[推荐使用pnpm](https://blog.csdn.net/moshowgame/article/details/122020979)
+>》  先安装pnpm   <br>
+npx pnpm add -g pnpm    <br>
+》  安装依赖   <br>
+pnpm install   <br>
+》  启动项目   <br>
+pnpm dev   <br>
+》  访问项目   <br>
+http://localhost:9000/#/
+
+
 URL
 ----
-- 登录页面(旧) http://localhost:6969/quartz/login (token:85f3389e-d774-4f64-a96c-d4ba61f988b8)
-- 启动页面(旧) http://localhost:6969/quartz/index
 - 测试token页面 http://localhost:6969/quartz/demo/token?username=111&password=222
 - 前端页面(新vue) http://localhost:9000/#/
 
 <img src="./image1.png">
 <img src="./image2.png">
 <img src="./image3.png">
+<img src="./image4.png">
 
 release log
 ----
 | 日期         | 内容                                                        |
 |------------|-----------------------------------------------------------|
-| 更新预告       | 优化部分任务处理逻辑和页面展示内容                                         |
+| 更新预告       | 优化Assumption处理逻辑                                          |
+| 2022-02-25 | 修复Token页面，新增Assumption内容.                                 |
 | 2022-02-22 | 请求和响应的界面优化，分页插件修复.                                        |
 | 2022-02-21 | vue跟后台分离,基于one-step-admin实现简单的界面功能,优化token和request.       |
 | 2022-02-20 | 基于墨菲安全进行安全扫描,更新相关依赖.                                      |

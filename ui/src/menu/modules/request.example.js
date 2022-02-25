@@ -12,7 +12,11 @@ export default {
         },
         {
             title: '令牌设置',
-            windowName: 'TokenList'
+            windowName: 'TokenEdit'
+        },
+        {
+            title: '断言设置',
+            windowName: 'AssumptionEdit'
         }
     ]
 }

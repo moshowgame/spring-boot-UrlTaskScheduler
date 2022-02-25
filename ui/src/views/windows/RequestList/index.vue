@@ -32,16 +32,17 @@
                 </el-table-column>
                 <el-table-column prop="triggerState" label="触发状态">
                     <template #default="scope">
-                        <el-tag type="success" v-if="scope.row.triggerState==='WAITING'" disable-transitions >等待中 </el-tag>
-                        <el-tag type="warning" v-if="scope.row.triggerState==='PAUSED'" disable-transitions >任务暂停 </el-tag>
-                        <el-tag type="info" v-if="scope.row.triggerState==='ACQUIRED'" disable-transitions >正在执行中 </el-tag>
-                        <el-tag type="danger" v-if="scope.row.triggerState==='BLOCKED'" disable-transitions >任务阻塞 </el-tag>
-                        <el-tag type="danger" v-if="scope.row.triggerState==='ERROR'" disable-transitions >任务错误 </el-tag>
-                        <el-tag type="warning" v-if="scope.row.triggerState===null" disable-transitions >未知 </el-tag>
+                        <el-tag type="info" v-if="scope.row.triggerState==='WAITING'" disable-transitions >等待</el-tag>
+                        <el-tag type="warning" v-if="scope.row.triggerState==='PAUSED'" disable-transitions >暂停</el-tag>
+                        <el-tag type="success" v-if="scope.row.triggerState==='ACQUIRED'" disable-transitions >运行中</el-tag>
+                        <el-tag type="success" v-if="scope.row.triggerState==='COMPLETE'" disable-transitions >运行中</el-tag>
+                        <el-tag type="danger" v-if="scope.row.triggerState==='BLOCKED'" disable-transitions >阻塞</el-tag>
+                        <el-tag type="danger" v-if="scope.row.triggerState==='ERROR'" disable-transitions >错误</el-tag>
+                        <el-tag type="warning" v-if="scope.row.triggerState===null" disable-transitions >未知</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column prop="nextFireTime" label="下次执行" />
-                <el-table-column label="更新时间" :formatter="dateFormat"/>
+                <el-table-column label="更新时间" prop="updateTime"/>
                 <el-table-column label="操作" width="200" align="center">
                     <template #default="scope">
                         <el-button type="primary" size="small" plain @click="start(scope.row)">启用</el-button>

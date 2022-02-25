@@ -44,9 +44,14 @@ public class Result extends HashMap<String, Object> {
         r.put("total", page.getTotal());
         return r;
     }
-    public static Result ok(Object msg) {
+    public static Result ok(String msg) {
         Result r = new Result();
         r.put("msg", msg);
+        return r;
+    }
+    public static Result ok(Object data) {
+        Result r = new Result();
+        r.put("data", data);
         return r;
     }
 

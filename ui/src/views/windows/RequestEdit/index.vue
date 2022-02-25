@@ -5,9 +5,9 @@
             <el-row type="flex" justify="center">
                 <el-col :md="12" :sm="18">
                     <el-form :model="form" label-width="80px">
-                        <el-form-item label="请求ID">
+<!--                        <el-form-item label="请求ID">
                             <el-input v-model="params.requestId" />
-                        </el-form-item>
+                        </el-form-item>-->
                         <el-form-item label="请求名称">
                             <el-input v-model="form.requestName" />
                         </el-form-item>
@@ -59,7 +59,7 @@ export default {
     methods: {
           onSave() {
               //validation
-              if(this.form.requestName.length<6||this.form.requestUrl.length<6||this.form.requestId.length<6||this.form.requestCron.length<6){
+              if(this.form.requestName.length<6||this.form.requestUrl.length<6||this.form.requestCron.length<6){
                   this.$message.error({
                       message: '请完整填写所需信息！',
                       center: true
