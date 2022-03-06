@@ -14,6 +14,7 @@
                                         :key="item.requestId"
                                         :label="item.requestName"
                                         :value="item.requestId"
+                                        @click="getDataList"
                                     >
                                     </el-option>
                                 </el-select>
@@ -35,7 +36,7 @@
             />
             <el-table ref="table" class="list-table" :data="dataList" border stripe highlight-current-row>
                 <el-table-column prop="responseId" label="请求ID" />
-                <el-table-column prop="requestId" label="请求名称" />
+<!--                <el-table-column prop="requestId" label="请求名称" />-->
                 <el-table-column prop="requestTime" label="请求时间" />
                 <el-table-column prop="responseTime" label="响应时间" />
                 <el-table-column prop="responseText" label="响应报文" />

@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.software.dev.domain.UrlRequest;
 import com.software.dev.domain.UrlRequestToken;
 import com.software.dev.domain.UrlResponse;
+import com.software.dev.domain.UrlResponseAssumption;
 import com.software.dev.mapper.UrlRequestMapper;
 import com.software.dev.mapper.UrlRequestTokenMapper;
+import com.software.dev.mapper.UrlResponseAssumptionMapper;
 import com.software.dev.mapper.UrlResponseMapper;
 import com.software.dev.service.UrlPlusService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,8 @@ public class UrlJob  implements Job, Serializable {
     private UrlPlusService urlPlusService;
     @Autowired
     private UrlRequestTokenMapper urlRequestTokenMapper;
+    @Autowired
+    private UrlResponseAssumptionMapper urlResponseAssumptionMapper;
 
 
     @Override
@@ -111,7 +115,19 @@ public class UrlJob  implements Job, Serializable {
                     }
                     urlResponse.setStatus(1);
                     urlResponse.setResponseText(responseMsg);
-                    //TODO 推断逻辑 assumption
+                    //URL PLUS之推断逻辑 by Moshow 2022-03-06
+                    UrlResponseAssumption urlResponseAssumption = urlResponseAssumptionMapper.selectOne(new QueryWrapper<UrlResponseAssumption>().eq("request_id",urlId));
+                    if(urlResponseAssumption!=null){
+                        if(!StringUtils.isAllEmpty(responseMsg,urlResponseAssumption.getKeyFirst())&&responseMsg.contains(urlResponseAssumption.getKeyFirst())){
+                            urlResponse.setAssumptionResult(urlResponseAssumption.getValueFirst());
+                        }else if(!StringUtils.isAllEmpty(responseMsg,urlResponseAssumption.getKeySecond())&&responseMsg.contains(urlResponseAssumption.getKeySecond())){
+                            urlResponse.setAssumptionResult(urlResponseAssumption.getValueSecond());
+                        }else if(!StringUtils.isAllEmpty(responseMsg,urlResponseAssumption.getKeyThird())&&responseMsg.contains(urlResponseAssumption.getKeyThird())){
+                            urlResponse.setAssumptionResult(urlResponseAssumption.getValueThird());
+                        }else{
+                            urlResponse.setAssumptionResult(urlResponseAssumption.getValueElse());
+                        }
+                    }
                 }catch(Exception e){
                     //优化异常提示
                     urlResponse.setStatus(9);

@@ -18,9 +18,9 @@
                 </el-form>
             </search-bar>
             <el-table ref="table" class="list-table" :data="dataList" border stripe highlight-current-row>
-                <el-table-column prop="requestId" label="请求ID" />
+<!--                <el-table-column prop="requestId" label="请求ID" />-->
                 <el-table-column prop="requestName" label="请求名称" />
-                <el-table-column prop="requestMethod" label="请求方式" />
+<!--                <el-table-column prop="requestMethod" label="请求方式" />-->
                 <el-table-column prop="requestCron" label="CRON表达式" />
                 <el-table-column prop="requestUrl" label="请求URL" />
                 <el-table-column prop="status" label="任务状态" >
@@ -46,8 +46,8 @@
                 <el-table-column label="操作" width="200" align="center">
                     <template #default="scope">
                         <el-button type="primary" size="small" plain @click="start(scope.row)">启用</el-button>
-                        <el-button type="primary" size="small" plain @click="pause(scope.row)">暂停</el-button>
-                        <el-button type="primary" size="small" plain @click="trigger(scope.row)">执行</el-button>
+                        <el-button type="primary" size="small" plain @click="pause(scope.row)">暂停</el-button><br>
+                        <el-button type="primary" size="small" plain @click="trigger(scope.row)">执行</el-button><br>
                         <el-button type="primary" size="small" plain @click="onEdit(scope.row)">编辑</el-button>
                         <el-button type="danger" size="small" plain @click="onDel(scope.row)">删除</el-button>
                     </template>

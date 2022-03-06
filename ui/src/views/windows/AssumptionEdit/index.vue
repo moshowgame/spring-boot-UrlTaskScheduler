@@ -129,6 +129,7 @@ export default {
                                   valueFirst:'' ,
                                   valueSecond:'',
                                   valueThird:'',
+                                  status: '1',
                           }
                           this.form.requestId=this.search.requestId
                       }else{
