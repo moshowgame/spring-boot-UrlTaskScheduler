@@ -1,7 +1,10 @@
 server:
   port: 6969
   servlet:
-      context-path: /quartz
+    context-path: /quartz
+    encoding:
+      force: true
+      charset: UTF-8
 tomcat:
     remote-ip-header: x-forward-for
     uri-encoding: UTF-8
@@ -15,27 +18,23 @@ mybatis-plus:
 spring:
     banner:
       charset: UTF-8
-    http:
-      encoding:
-        force: true
-        charset: UTF-8
     application:
         name: spring-boot-EasyUrlTask
-#    freemarker:
-#        request-context-attribute: request
-#        suffix: .html
-#        content-type: text/html
-#        enabled: true
-#        cache: false
-#        charset: UTF-8
-#        allow-request-override: false
-#        expose-request-attributes: true
-#        expose-session-attributes: true
-#        expose-spring-macro-helpers: true
-#        settings:
-#          number_format: 0.##
-#          default_encoding: UTF-8
-#          template_loader: /templates/
+    freemarker:
+        request-context-attribute: request
+        suffix: .html
+        content-type: text/html
+        enabled: true
+        cache: false
+        charset: UTF-8
+        allow-request-override: false
+        expose-request-attributes: true
+        expose-session-attributes: true
+        expose-spring-macro-helpers: true
+        settings:
+          number_format: 0.##
+          default_encoding: UTF-8
+#          template_loader: templates
 #    mvc:
 #      static-path-pattern: /statics/**
     datasource:

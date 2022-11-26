@@ -1,5 +1,6 @@
 package com.software.dev.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.software.dev.domain.Result;
 import com.software.dev.domain.SysToken;
@@ -9,7 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,10 +24,14 @@ class IndexController {
     SysTokenMapper sysTokenMapper;
 
     @GetMapping("/index")
-    public Result index(){
-        return Result.error("无法直接访问");
+    public ModelAndView index(){
+        return new ModelAndView("index");
     }
 
+    @GetMapping("/login")
+    public ModelAndView login(){
+        return new ModelAndView("login");
+    }
     @PostMapping("/login")
     public Result loginActon(String token, HttpSession session){
         if(session.getAttribute("token")!=null){
@@ -38,5 +45,32 @@ class IndexController {
         }else{
             return Result.error("无效token");
         }
+    }
+
+    @GetMapping("/request/list")
+    public ModelAndView requestListPage(){
+        return new ModelAndView("page/request-list");
+    }
+
+    @GetMapping("/token/list")
+    public ModelAndView tokenListPage(){
+        return new ModelAndView("page/token-list");
+    }
+    @GetMapping("/log/list")
+    public ModelAndView logPage(){
+        return new ModelAndView("page/log-list");
+    }
+    @GetMapping("/token/detail")
+    public ModelAndView tokenDetail(@RequestParam(required = true) String requestId){
+        log.info("requestId:{}",requestId);
+        ModelAndView mav = new ModelAndView("page/token-detail");
+        mav.addObject("requestId",requestId);
+        return mav;
+    }
+    @GetMapping("/response/list")
+    public ModelAndView responsePage(@RequestParam(required = true) String requestId){
+        ModelAndView mav = new ModelAndView("page/response-list");
+        mav.addObject("requestId",requestId);
+        return mav;
     }
 }

@@ -43,7 +43,7 @@ public class UrlTaskController {
     public Result info(@RequestBody PageParam param){
         return Result.ok().put("data",urlRequestMapper.selectById(param.getRequestId()));
     }
-    @PostMapping("/request/list")
+    @RequestMapping("/request/list")
     public Result requestList(@RequestBody PageParam param){
         log.info("请求列表{}",JSON.toJSONString(param));
         //手动分页
@@ -64,7 +64,7 @@ public class UrlTaskController {
         log.info("响应列表{}",JSON.toJSONString(param));
         //自带分页
         IPage<UrlResponse> iPage= urlResponseMapper.selectPage(new Page<UrlResponse>(param.getPage(),param.getLimit()),
-                new QueryWrapper<UrlResponse>().eq("request_id",param.getRequestId()).like(StringUtils.isNotBlank(param.getSearch()),"response_text",param.getSearch()).orderByDesc("response_time")
+                new QueryWrapper<UrlResponse>().eq(StringUtils.isNotBlank(param.getRequestId()),"request_id",param.getRequestId()).like(StringUtils.isNotBlank(param.getSearch()),"response_text",param.getSearch()).orderByDesc("response_time")
         );
         PageUtils page = new PageUtils(iPage.getRecords(), (int) iPage.getTotal(),param.getLimit(),param.getPage());
 

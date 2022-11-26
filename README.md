@@ -49,37 +49,23 @@ T_TASK_TRIGGERS表 TRIGGER_STATE状态字段
 <img src="./quartz-status.png">
 
 
-one-step-admin 前端使用说明
-----
-[推荐使用pnpm](https://blog.csdn.net/moshowgame/article/details/122020979)
->》  先安装pnpm   <br>
-npx pnpm add -g pnpm    <br>
-》  安装依赖   <br>
-pnpm install   <br>
-》  启动项目   <br>
-pnpm dev   <br>
-》  访问项目   <br>
-http://localhost:9000/#/
-
-
 URL
 ----
 - 测试token页面 http://localhost:6969/quartz/demo/token?username=111&password=222
-- 前端页面(新vue) http://localhost:9000/#/
+- 前端页面(请求列表) http://localhost:6969/quartz/index#request/list
 
 <img src="./image1.png">
 <img src="./image2.png">
 <img src="./image3.png">
 <img src="./image4.png">
 
-release log
+Release Note
 ----
 | 日期         | 内容                                                        |
 |------------|-----------------------------------------------------------|
+| 2022-11-26 | 回滚页面到旧版本并进行优化.                                            |
 | 2022-03-06 | 实现响应推断处理逻辑.优化UI显示逻辑.                                      |
 | 2022-02-25 | 修复Token页面，新增Assumption内容.                                 |
-| 2022-02-22 | 请求和响应的界面优化，分页插件修复.                                        |
-| 2022-02-21 | vue跟后台分离,基于one-step-admin实现简单的界面功能,优化token和request.       |
 | 2022-02-20 | 基于墨菲安全进行安全扫描,更新相关依赖.                                      |
 | 2021-03-28 | 优化以及修复请求、响应,UI优化,修复执行问题.新增登录功能.                           |
 | 2021-03-27 | 重启项目2.0版本,UI改版,UrlRequest优化.                              |

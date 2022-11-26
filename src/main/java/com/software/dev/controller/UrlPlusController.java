@@ -4,10 +4,10 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.software.dev.domain.PageParam;
-import com.software.dev.domain.Result;
-import com.software.dev.domain.UrlRequestToken;
-import com.software.dev.domain.UrlResponseAssumption;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.software.dev.domain.*;
 import com.software.dev.mapper.UrlRequestTokenMapper;
 import com.software.dev.mapper.UrlResponseAssumptionMapper;
 import com.software.dev.service.UrlPlusService;
@@ -37,6 +37,18 @@ public class UrlPlusController {
     @Autowired
     private UrlPlusService urlPlusService;
 
+    @PostMapping("/token/list")
+    public Result tokenList(@RequestBody PageParam param){
+        log.info("响应列表{}",JSON.toJSONString(param));
+        //自带分页
+        IPage<UrlRequestToken> iPage= urlRequestTokenMapper.selectPage(new Page<UrlRequestToken>(param.getPage(),param.getLimit()),
+                new QueryWrapper<UrlRequestToken>().eq("status",1).like(StringUtils.isNotBlank(param.getSearch()),"token_url",param.getSearch()).orderByDesc("request_id")
+        );
+        PageUtils page = new PageUtils(iPage.getRecords(), (int) iPage.getTotal(),param.getLimit(),param.getPage());
+
+        return Result.ok().put("page", page);
+//        return Result.ok(urlRequestTokenMapper.selectList(new QueryWrapper<UrlRequestToken>().eq("status","1")));
+    }
     @PostMapping("/token/info")
     public Result tokenQuery(@RequestBody PageParam pageParam){
         UrlRequestToken urlRequestToken=urlRequestTokenMapper.selectById(pageParam.getRequestId());
