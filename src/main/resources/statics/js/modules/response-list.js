@@ -8,6 +8,7 @@ $(function () {
         colModel: [			
 			{ label: '响应ID', name: 'responseId', width: 80, key: true },
 			{ label: '请求ID', name: 'requestId', width: 80, key: true },
+            { label: '断言结果', name: 'assumptionResult', width: 100, key: true },
             { label: '请求时间', name: 'responseTime',  width: 85 , formatter:function (value) {
                     return value;//formatDate(value);
                 }},

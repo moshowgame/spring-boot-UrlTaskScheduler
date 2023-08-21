@@ -39,6 +39,11 @@ public class UrlRequest implements Serializable {
     private String requestUrl;
 
     /**
+     * 请求分组
+     */
+    private String requestGroup;
+
+    /**
      * 请求方法，get/post
      */
     private String requestMethod;

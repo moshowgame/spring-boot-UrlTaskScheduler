@@ -8,7 +8,8 @@ $(function () {
         serializeGridData: function (data) { return JSON.stringify(data); },
         colModel: [			
 			{ label: '请求ID', name: 'requestId', width: 45, key: true },
-			{ label: '请求名', name: 'requestName', width: 75 },
+            { label: '分组', name: 'requestGroup', width: 75 },
+			{ label: '任务', name: 'requestName', width: 75 },
             { label: '请求方式', name: 'requestMethod', sortable: false, width: 75 },
 			{ label: 'CRON表达式', name: 'requestCron', width: 90 },
 			{ label: 'URL', name: 'requestUrl', width: 100 },
@@ -18,12 +19,12 @@ $(function () {
 					'<span class="label label-success">启用</span>';
 			}},
 			{ label: '触发状态', name: 'triggerState', width: 60, formatter: function(value, options, row){
-			    if(value === 'WAITING') {return '<span class="label label-info">等待执行中</span>' ;}
-			    else if(value === 'PAUSED') {return '<span class="label label-info">任务暂停</span>' ;}
-			    else if(value === 'ACQUIRED') {return '<span class="label label-info">正在执行中</span>' ;}
-			    else if(value === 'BLOCKED') {return '<span class="label label-primary">任务阻塞</span>' ;}
-			    else if(value === 'ERROR') {return '<span class="label label-error">任务错误</span>' ;}
-				else{return '暂时无法获取';}
+			    if(value === 'WAITING') {return '<span class="label label-info">等待中</span>' ;}
+			    else if(value === 'PAUSED') {return '<span class="label label-danger">暂停</span>' ;}
+			    else if(value === 'ACQUIRED') {return '<span class="label label-info">分配中</span>' ;}
+			    else if(value === 'BLOCKED') {return '<span class="label label-success">运行中(阻塞)</span>' ;}
+			    else if(value === 'ERROR') {return '<span class="label label-error">错误</span>' ;}
+				else{return '<span class="label label-warning">暂时无法获取</span>';}
 			}},
             { label: '超时设置', name: 'requestTimeout', width: 80 },
 			{ label: '下次执行', name: 'nextFireTime',  width: 85 , formatter:function (value) {
@@ -237,6 +238,13 @@ const vm = new Vue({
                 return;
             }
             window.open(baseURL + 'token/detail?requestId=' + objectId, 'TOKEN令牌设置', 'height=750, width=900, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
+        },
+        assumption: function () {
+            const objectId = getSelectedRow();
+            if (objectId == null) {
+                return;
+            }
+            window.open(baseURL + 'response/list?requestId=' + objectId, '日志查看', 'height=750, width=900, top=0,left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')
         }
     }
 });
